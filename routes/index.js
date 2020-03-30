@@ -31,12 +31,18 @@ async function indexRoutes(req, res) {
     users: {
       users: '/users',
       user: '/users/{id}',
-      read: '/users/{id}/read',
     },
     me: {
       me: '/users/me',
       profile: '/users/me/profile',
-      read: '/users/me/read',
+    },
+    highlights: '/highlights',
+    fantasy: {
+      static: '/fantasy',
+      myFantasy: '/fantasy/my-fantasy',
+    },
+    football: {
+
     },
   });
 }
