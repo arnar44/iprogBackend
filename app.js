@@ -1,23 +1,15 @@
 require('dotenv').config();
 
 const express = require('express');
-const bodyParser = require('body-parser');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
-const books = require('./routes/books');
-const categories = require('./routes/categories');
 
 const app = express();
 app.use(express.json());
 
-
-app.use(bodyParser.json());
-
 app.use('/', index);
 app.use('/users', users);
-app.use('/books', books);
-app.use('/categories', categories);
 
 function notFoundHandler(req, res, next) { // eslint-disable-line
   res.status(404).json({ error: 'Not found' });
