@@ -28,11 +28,6 @@ async function indexRoutes(req, res) {
       register: '/register',
       login: '/login',
     },
-    books: {
-      books: '/books',
-      book: '/book/{id}',
-    },
-    categories: '/categories',
     users: {
       users: '/users',
       user: '/users/{id}',
