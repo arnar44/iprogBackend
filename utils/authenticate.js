@@ -43,19 +43,25 @@ async function comparePasswords(hash, password) {
 
 async function login(req, res) {
   const { username, password } = req.body;
-  const user = await users.findByUsername(username);
+  const userAll = await users.findByUsername(username);
 
-  if (!user) {
+  if (!userAll) {
     return res.status(401).json({ error: 'No such user' });
   }
 
-  const passwordIsCorrect = await comparePasswords(password, user.password);
+  const passwordIsCorrect = await comparePasswords(password, userAll.password);
 
   if (passwordIsCorrect) {
-    const payload = { id: user.id };
+    const payload = { id: userAll.id };
     const tokenOptions = { expiresIn: parseInt(tokenLifetime, 10) };
     const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
-    return res.json({ token });
+    const user = {
+      id: userAll.id,
+      username: userAll.username,
+      name: userAll.name,
+      profile: userAll.profile,
+    };
+    return res.json({ token, user });
   }
 
   return res.status(401).json({ error: 'Invalid password' });
