@@ -68,10 +68,10 @@ async function listFixtures(req, res) {
   ]);
 
   return res.status(200).json([
-    { team: 'Bundesliga', data: jsonBundesliga.api },
-    { team: 'La Liga', data: jsonLaLiga.api },
-    { team: 'Premier League', data: jsonPrem.api },
-    { team: 'Searie A', data: jsonSerieA.api },
+    { title: 'Bundesliga', data: jsonBundesliga.api },
+    { title: 'La Liga', data: jsonLaLiga.api },
+    { title: 'Premier League', data: jsonPrem.api },
+    { title: 'Searie A', data: jsonSerieA.api },
   ]);
 }
 
@@ -82,10 +82,10 @@ async function staticFixtures(req, res, next) {
   }
 
   return res.status(200).json([
-    { team: 'Bundesliga', data: BUNDESLIGA_04_18.api },
-    { team: 'La Liga', data: LALIGA_04_22.api },
-    { team: 'Premier League', data: PREMIER_04_18.api },
-    { team: 'Searie A', data: SERIEA_04_19.api },
+    { title: 'Bundesliga', data: BUNDESLIGA_04_18.api },
+    { title: 'La Liga', data: LALIGA_04_22.api },
+    { title: 'Premier League', data: PREMIER_04_18.api },
+    { title: 'Searie A', data: SERIEA_04_19.api },
   ]);
 }
 
