@@ -7,7 +7,7 @@ const {
   BUNDESLIGA_04_18,
   LALIGA_04_22,
   PREMIER_04_18,
-  SERIEA_04_19
+  SERIEA_04_19,
 } = require('./static');
 
 const {
@@ -19,10 +19,10 @@ const {
 
 // Calls the scorebat API and returns the current higlights
 async function listFixtures(req, res) {
-  // TODO get 
+  // TODO get
   const { date } = req.params;
   const apiKey = req.get('x-rapidapi-key');
-  const apiHost = req.get('x-rapidapi-host')
+  const apiHost = req.get('x-rapidapi-host');
 
   // Little security hihi 🚀
   if (RAPID_API_KEY !== apiKey || RAPID_API_HOST !== apiHost) {
@@ -34,47 +34,45 @@ async function listFixtures(req, res) {
   const prem = new URL(`/v2/fixtures/league/524/${date}`, baseUrl);
   const serieA = new URL(`/v2/fixtures/league/891/${date}`, baseUrl);
 
-  console.log(baseUrl, bundesliga);
-
 
   const options = {
     method: 'GET',
     headers: {
       'x-rapidapi-key': apiKey,
-      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
-    }
-  }
+      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
+    },
+  };
 
   const [
-    response_bundesliga,
-    response_laLiga,
-    response_prem,
-    response_serieA
+    responseBundesliga,
+    responseLaLiga,
+    responsePrem,
+    responseSerieA,
   ] = await Promise.all([
     fetch(bundesliga.href, options),
     fetch(laLiga.href, options),
     fetch(prem.href, options),
-    fetch(serieA.href, options)
+    fetch(serieA.href, options),
   ]);
 
   const [
-    json_bundesliga,
-    json_laLiga,
-    json_prem,
-    json_serieA
+    jsonBundesliga,
+    jsonLaLiga,
+    jsonPrem,
+    jsonSerieA,
   ] = await Promise.all([
-    response_bundesliga.json(),
-    response_laLiga.json(),
-    response_prem.json(),
-    response_serieA.json()
+    responseBundesliga.json(),
+    responseLaLiga.json(),
+    responsePrem.json(),
+    responseSerieA.json(),
   ]);
 
-  res.status(200).json({
-    bundesliga: json_bundesliga.api,
-    laLiga: json_laLiga.api,
-    prem: json_prem.api,
-    serieA: json_serieA.api
-  });
+  return res.status(200).json([
+    { team: 'Bundesliga', data: jsonBundesliga.api },
+    { team: 'La Liga', data: jsonLaLiga.api },
+    { team: 'Premier League', data: jsonPrem.api },
+    { team: 'Searie A', data: jsonSerieA.api },
+  ]);
 }
 
 
@@ -83,12 +81,12 @@ async function staticFixtures(req, res, next) {
     return next();
   }
 
-  res.status(200).json({
-    bundesliga: BUNDESLIGA_04_18.api,
-    laLiga: LALIGA_04_22.api,
-    prem: PREMIER_04_18.api,
-    serieA: SERIEA_04_19.api
-  });
+  return res.status(200).json([
+    { team: 'Bundesliga', data: BUNDESLIGA_04_18.api },
+    { team: 'La Liga', data: LALIGA_04_22.api },
+    { team: 'Premier League', data: PREMIER_04_18.api },
+    { team: 'Searie A', data: SERIEA_04_19.api },
+  ]);
 }
 
 
