@@ -1,5 +1,5 @@
 // https://api-football-v1.p.rapidapi.com/v2/fixtures/league/524/2020-04-18
-export const PREMIER_04_18 = {
+const PREMIER_04_18 = {
     "api": {
         "results": 7,
         "fixtures": [
@@ -274,7 +274,7 @@ export const PREMIER_04_18 = {
 }
 
 // https://api-football-v1.p.rapidapi.com/v2/fixtures/league/754/2020-04-18
-export const BUNDESLIGA_04_18 = {
+const BUNDESLIGA_04_18 = {
     "api": {
         "results": 9,
         "fixtures": [
@@ -625,7 +625,7 @@ export const BUNDESLIGA_04_18 = {
 }
 
 // https://api-football-v1.p.rapidapi.com/v2/fixtures/league/891/2020-04-19
-export const SERIEA_04_19 = {
+const SERIEA_04_19 = {
     "api": {
         "results": 10,
         "fixtures": [
@@ -1014,7 +1014,7 @@ export const SERIEA_04_19 = {
 }
 
 
-export const LALIGA_04_22 = {
+const LALIGA_04_22 = {
     "api": {
         "results": 10,
         "fixtures": [
@@ -1400,4 +1400,11 @@ export const LALIGA_04_22 = {
             }
         ]
     }
+}
+
+module.exports = {
+    BUNDESLIGA_04_18,
+    PREMIER_04_18,
+    LALIGA_04_22,
+    SERIEA_04_19,
 }

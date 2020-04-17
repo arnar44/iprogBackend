@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
+    "static": "NODE_ENV=static npm start",
     "eslint": "eslint *.js **/*.js",
     "dev": "nodemon app.js"
   },
