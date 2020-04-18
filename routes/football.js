@@ -11,8 +11,8 @@ const {
   PREMIER_04_18,
   PREMIER_02_29,
   SERIEA_04_19,
-  SERIEA_02_29
-} = require('./static');
+  SERIEA_02_29,
+} = require('./static-fixtures');
 
 const {
   BASE_URL_FOOTBALL_API: baseUrl,
@@ -79,7 +79,15 @@ async function listFixtures(req, res) {
 }
 
 
-async function staticFixtures(req, res, next) {
+async function fixtureEvents(req, res) {
+  res.status(200).json({});
+}
+
+async function fixtureStats(req, res) {
+  res.status(200).json({});
+}
+
+function staticFixtures(req, res, next) {
   if (NODE_ENV !== 'static') {
     return next();
   }
@@ -103,13 +111,22 @@ async function staticFixtures(req, res, next) {
   ]);
 }
 
+function staticEvents(req, res, next) {
+  res.status(200).json({});
+}
+
+function staticStats(req, res, next) {
+  res.status(200).json({});
+}
+
 
 function catchErrors(fn) {
   return (req, res, next) => fn(req, res, next).catch(next);
 }
 
-
 router.get('/:date', staticFixtures, catchErrors(listFixtures));
+router.get('/fixture/events/:id', staticEvents, catchErrors(fixtureEvents));
+router.get('/fixture/statistics/:id', staticStats, catchErrors(fixtureStats));
 
 
 module.exports = router;

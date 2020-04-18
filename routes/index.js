@@ -42,7 +42,10 @@ async function indexRoutes(req, res) {
       myFantasy: '/fantasy/my-fantasy',
     },
     football: {
-
+      fixtures: '/football/{YYYY-MM-DD}',
+      /* fixture: 'football/fixture/{fixtureId}', */
+      statistic: '/football/fixture/statistics/{fixtureId}',
+      event: 'football/fixture/events/{fixtureId}',
     },
   });
 }
