@@ -5,9 +5,13 @@ const router = express.Router();
 
 const {
   BUNDESLIGA_04_18,
+  BUNDESLIGA_02_29,
   LALIGA_04_22,
+  LALIGA_02_29,
   PREMIER_04_18,
+  PREMIER_02_29,
   SERIEA_04_19,
+  SERIEA_02_29
 } = require('./static');
 
 const {
@@ -19,7 +23,6 @@ const {
 
 // Calls the scorebat API and returns the current higlights
 async function listFixtures(req, res) {
-  // TODO get
   const { date } = req.params;
   const apiKey = req.get('x-rapidapi-key');
   const apiHost = req.get('x-rapidapi-host');
@@ -79,6 +82,17 @@ async function listFixtures(req, res) {
 async function staticFixtures(req, res, next) {
   if (NODE_ENV !== 'static') {
     return next();
+  }
+
+  const { date } = req.params;
+
+  if (date === 'OLD') {
+    return res.status(200).json([
+      { title: 'Bundesliga', data: BUNDESLIGA_02_29.api },
+      { title: 'La Liga', data: LALIGA_02_29.api },
+      { title: 'Premier League', data: PREMIER_02_29.api },
+      { title: 'Searie A', data: SERIEA_02_29.api },
+    ]);
   }
 
   return res.status(200).json([

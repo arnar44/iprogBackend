@@ -273,6 +273,243 @@ const PREMIER_04_18 = {
     }
 }
 
+// https://api-football-v1.p.rapidapi.com/v2/fixtures/league/524/2020-02-29
+const PREMIER_02_29 = {
+    "api": {
+        "results": 6,
+        "fixtures": [
+            {
+                "fixture_id": 157286,
+                "league_id": 524,
+                "league": {
+                    "name": "Premier League",
+                    "country": "England",
+                    "logo": "https://media.api-sports.io/football/leagues/39.png",
+                    "flag": "https://media.api-sports.io/flags/gb.svg"
+                },
+                "event_date": "2020-02-29T00:00:00+00:00",
+                "event_timestamp": 1582934400,
+                "firstHalfStart": null,
+                "secondHalfStart": null,
+                "round": "Regular Season - 28",
+                "status": "Match Postponed",
+                "statusShort": "PST",
+                "elapsed": 0,
+                "venue": "Villa Park (Birmingham)",
+                "referee": null,
+                "homeTeam": {
+                    "team_id": 66,
+                    "team_name": "Aston Villa",
+                    "logo": "https://media.api-sports.io/football/teams/66.png"
+                },
+                "awayTeam": {
+                    "team_id": 62,
+                    "team_name": "Sheffield Utd",
+                    "logo": "https://media.api-sports.io/football/teams/62.png"
+                },
+                "goalsHomeTeam": null,
+                "goalsAwayTeam": null,
+                "score": {
+                    "halftime": null,
+                    "fulltime": null,
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 157287,
+                "league_id": 524,
+                "league": {
+                    "name": "Premier League",
+                    "country": "England",
+                    "logo": "https://media.api-sports.io/football/leagues/39.png",
+                    "flag": "https://media.api-sports.io/flags/gb.svg"
+                },
+                "event_date": "2020-02-29T12:30:00+00:00",
+                "event_timestamp": 1582979400,
+                "firstHalfStart": 1582979400,
+                "secondHalfStart": 1582983000,
+                "round": "Regular Season - 28",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "The American Express Community Stadium (Falmer, East Sussex)",
+                "referee": "M. Atkinson",
+                "homeTeam": {
+                    "team_id": 51,
+                    "team_name": "Brighton",
+                    "logo": "https://media.api-sports.io/football/teams/51.png"
+                },
+                "awayTeam": {
+                    "team_id": 52,
+                    "team_name": "Crystal Palace",
+                    "logo": "https://media.api-sports.io/football/teams/52.png"
+                },
+                "goalsHomeTeam": 0,
+                "goalsAwayTeam": 1,
+                "score": {
+                    "halftime": "0-0",
+                    "fulltime": "0-1",
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 157285,
+                "league_id": 524,
+                "league": {
+                    "name": "Premier League",
+                    "country": "England",
+                    "logo": "https://media.api-sports.io/football/leagues/39.png",
+                    "flag": "https://media.api-sports.io/flags/gb.svg"
+                },
+                "event_date": "2020-02-29T15:00:00+00:00",
+                "event_timestamp": 1582988400,
+                "firstHalfStart": 1582988400,
+                "secondHalfStart": 1582992000,
+                "round": "Regular Season - 28",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "Vitality Stadium (Bournemouth, Dorset)",
+                "referee": "A. Marriner",
+                "homeTeam": {
+                    "team_id": 35,
+                    "team_name": "Bournemouth",
+                    "logo": "https://media.api-sports.io/football/teams/35.png"
+                },
+                "awayTeam": {
+                    "team_id": 49,
+                    "team_name": "Chelsea",
+                    "logo": "https://media.api-sports.io/football/teams/49.png"
+                },
+                "goalsHomeTeam": 2,
+                "goalsAwayTeam": 2,
+                "score": {
+                    "halftime": "0-1",
+                    "fulltime": "2-2",
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 157290,
+                "league_id": 524,
+                "league": {
+                    "name": "Premier League",
+                    "country": "England",
+                    "logo": "https://media.api-sports.io/football/leagues/39.png",
+                    "flag": "https://media.api-sports.io/flags/gb.svg"
+                },
+                "event_date": "2020-02-29T15:00:00+00:00",
+                "event_timestamp": 1582988400,
+                "firstHalfStart": 1582988400,
+                "secondHalfStart": 1582992000,
+                "round": "Regular Season - 28",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "St. James' Park (Newcastle upon Tyne)",
+                "referee": "A. Madley",
+                "homeTeam": {
+                    "team_id": 34,
+                    "team_name": "Newcastle",
+                    "logo": "https://media.api-sports.io/football/teams/34.png"
+                },
+                "awayTeam": {
+                    "team_id": 44,
+                    "team_name": "Burnley",
+                    "logo": "https://media.api-sports.io/football/teams/44.png"
+                },
+                "goalsHomeTeam": 0,
+                "goalsAwayTeam": 0,
+                "score": {
+                    "halftime": "0-0",
+                    "fulltime": "0-0",
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 157294,
+                "league_id": 524,
+                "league": {
+                    "name": "Premier League",
+                    "country": "England",
+                    "logo": "https://media.api-sports.io/football/leagues/39.png",
+                    "flag": "https://media.api-sports.io/flags/gb.svg"
+                },
+                "event_date": "2020-02-29T15:00:00+00:00",
+                "event_timestamp": 1582988400,
+                "firstHalfStart": 1582988400,
+                "secondHalfStart": 1582992000,
+                "round": "Regular Season - 28",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "London Stadium (London)",
+                "referee": "A. Taylor",
+                "homeTeam": {
+                    "team_id": 48,
+                    "team_name": "West Ham",
+                    "logo": "https://media.api-sports.io/football/teams/48.png"
+                },
+                "awayTeam": {
+                    "team_id": 41,
+                    "team_name": "Southampton",
+                    "logo": "https://media.api-sports.io/football/teams/41.png"
+                },
+                "goalsHomeTeam": 3,
+                "goalsAwayTeam": 1,
+                "score": {
+                    "halftime": "2-1",
+                    "fulltime": "3-1",
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 157293,
+                "league_id": 524,
+                "league": {
+                    "name": "Premier League",
+                    "country": "England",
+                    "logo": "https://media.api-sports.io/football/leagues/39.png",
+                    "flag": "https://media.api-sports.io/flags/gb.svg"
+                },
+                "event_date": "2020-02-29T17:30:00+00:00",
+                "event_timestamp": 1582997400,
+                "firstHalfStart": 1582997400,
+                "secondHalfStart": 1583001000,
+                "round": "Regular Season - 28",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "Vicarage Road (Watford)",
+                "referee": "M. Oliver",
+                "homeTeam": {
+                    "team_id": 38,
+                    "team_name": "Watford",
+                    "logo": "https://media.api-sports.io/football/teams/38.png"
+                },
+                "awayTeam": {
+                    "team_id": 40,
+                    "team_name": "Liverpool",
+                    "logo": "https://media.api-sports.io/football/teams/40.png"
+                },
+                "goalsHomeTeam": 3,
+                "goalsAwayTeam": 0,
+                "score": {
+                    "halftime": "0-0",
+                    "fulltime": "3-0",
+                    "extratime": null,
+                    "penalty": null
+                }
+            }
+        ]
+    }
+}
+
 // https://api-football-v1.p.rapidapi.com/v2/fixtures/league/754/2020-04-18
 const BUNDESLIGA_04_18 = {
     "api": {
@@ -616,6 +853,205 @@ const BUNDESLIGA_04_18 = {
                 "score": {
                     "halftime": null,
                     "fulltime": null,
+                    "extratime": null,
+                    "penalty": null
+                }
+            }
+        ]
+    }
+}
+
+// https://api-football-v1.p.rapidapi.com/v2/fixtures/league/754/2020-02-29
+const BUNDESLIGA_02_29 = {
+    "api": {
+        "results": 5,
+        "fixtures": [
+            {
+                "fixture_id": 209121,
+                "league_id": 754,
+                "league": {
+                    "name": "Bundesliga 1",
+                    "country": "Germany",
+                    "logo": "https://media.api-sports.io/football/leagues/78.png",
+                    "flag": "https://media.api-sports.io/flags/de.svg"
+                },
+                "event_date": "2020-02-29T14:30:00+00:00",
+                "event_timestamp": 1582986600,
+                "firstHalfStart": 1582986600,
+                "secondHalfStart": 1582990200,
+                "round": "Regular Season - 24",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "Signal-Iduna-Park (Dortmund)",
+                "referee": "R. Hartmann",
+                "homeTeam": {
+                    "team_id": 165,
+                    "team_name": "Borussia Dortmund",
+                    "logo": "https://media.api-sports.io/football/teams/165.png"
+                },
+                "awayTeam": {
+                    "team_id": 160,
+                    "team_name": "SC Freiburg",
+                    "logo": "https://media.api-sports.io/football/teams/160.png"
+                },
+                "goalsHomeTeam": 1,
+                "goalsAwayTeam": 0,
+                "score": {
+                    "halftime": "1-0",
+                    "fulltime": "1-0",
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 209124,
+                "league_id": 754,
+                "league": {
+                    "name": "Bundesliga 1",
+                    "country": "Germany",
+                    "logo": "https://media.api-sports.io/football/leagues/78.png",
+                    "flag": "https://media.api-sports.io/flags/de.svg"
+                },
+                "event_date": "2020-02-29T14:30:00+00:00",
+                "event_timestamp": 1582986600,
+                "firstHalfStart": 1582986600,
+                "secondHalfStart": 1582990200,
+                "round": "Regular Season - 24",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "PreZero Arena (Sinsheim)",
+                "referee": "C. Dingert",
+                "homeTeam": {
+                    "team_id": 167,
+                    "team_name": "1899 Hoffenheim",
+                    "logo": "https://media.api-sports.io/football/teams/167.png"
+                },
+                "awayTeam": {
+                    "team_id": 157,
+                    "team_name": "Bayern Munich",
+                    "logo": "https://media.api-sports.io/football/teams/157.png"
+                },
+                "goalsHomeTeam": 0,
+                "goalsAwayTeam": 6,
+                "score": {
+                    "halftime": "0-4",
+                    "fulltime": "0-6",
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 209126,
+                "league_id": 754,
+                "league": {
+                    "name": "Bundesliga 1",
+                    "country": "Germany",
+                    "logo": "https://media.api-sports.io/football/leagues/78.png",
+                    "flag": "https://media.api-sports.io/flags/de.svg"
+                },
+                "event_date": "2020-02-29T14:30:00+00:00",
+                "event_timestamp": 1582986600,
+                "firstHalfStart": 1582986600,
+                "secondHalfStart": 1582990200,
+                "round": "Regular Season - 24",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "OPEL ARENA (Mainz)",
+                "referee": "H. Osmers",
+                "homeTeam": {
+                    "team_id": 164,
+                    "team_name": "FSV Mainz 05",
+                    "logo": "https://media.api-sports.io/football/teams/164.png"
+                },
+                "awayTeam": {
+                    "team_id": 185,
+                    "team_name": "SC Paderborn 07",
+                    "logo": "https://media.api-sports.io/football/teams/185.png"
+                },
+                "goalsHomeTeam": 2,
+                "goalsAwayTeam": 0,
+                "score": {
+                    "halftime": "2-0",
+                    "fulltime": "2-0",
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 209127,
+                "league_id": 754,
+                "league": {
+                    "name": "Bundesliga 1",
+                    "country": "Germany",
+                    "logo": "https://media.api-sports.io/football/leagues/78.png",
+                    "flag": "https://media.api-sports.io/flags/de.svg"
+                },
+                "event_date": "2020-02-29T14:30:00+00:00",
+                "event_timestamp": 1582986600,
+                "firstHalfStart": 1582986600,
+                "secondHalfStart": 1582990200,
+                "round": "Regular Season - 24",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "WWK Arena (Augsburg)",
+                "referee": "M. Schmidt",
+                "homeTeam": {
+                    "team_id": 170,
+                    "team_name": "FC Augsburg",
+                    "logo": "https://media.api-sports.io/football/teams/170.png"
+                },
+                "awayTeam": {
+                    "team_id": 163,
+                    "team_name": "Borussia Monchengladbach",
+                    "logo": "https://media.api-sports.io/football/teams/163.png"
+                },
+                "goalsHomeTeam": 2,
+                "goalsAwayTeam": 3,
+                "score": {
+                    "halftime": "0-0",
+                    "fulltime": "2-3",
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 209128,
+                "league_id": 754,
+                "league": {
+                    "name": "Bundesliga 1",
+                    "country": "Germany",
+                    "logo": "https://media.api-sports.io/football/leagues/78.png",
+                    "flag": "https://media.api-sports.io/flags/de.svg"
+                },
+                "event_date": "2020-02-29T17:30:00+00:00",
+                "event_timestamp": 1582997400,
+                "firstHalfStart": 1582997400,
+                "secondHalfStart": 1583001000,
+                "round": "Regular Season - 24",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "RheinEnergieStadion (Köln)",
+                "referee": "M. Gräfe",
+                "homeTeam": {
+                    "team_id": 192,
+                    "team_name": "FC Koln",
+                    "logo": "https://media.api-sports.io/football/teams/192.png"
+                },
+                "awayTeam": {
+                    "team_id": 174,
+                    "team_name": "FC Schalke 04",
+                    "logo": "https://media.api-sports.io/football/teams/174.png"
+                },
+                "goalsHomeTeam": 3,
+                "goalsAwayTeam": 0,
+                "score": {
+                    "halftime": "2-0",
+                    "fulltime": "3-0",
                     "extratime": null,
                     "penalty": null
                 }
@@ -1013,7 +1449,92 @@ const SERIEA_04_19 = {
     }
 }
 
+// https://api-football-v1.p.rapidapi.com/v2/fixtures/league/891/2020-02-29
+const SERIEA_02_29 = {
+    "api": {
+        "results": 2,
+        "fixtures": [
+            {
+                "fixture_id": 232775,
+                "league_id": 891,
+                "league": {
+                    "name": "Serie A",
+                    "country": "Italy",
+                    "logo": "https://media.api-sports.io/football/leagues/135.png",
+                    "flag": "https://media.api-sports.io/flags/it.svg"
+                },
+                "event_date": "2020-02-29T14:00:00+00:00",
+                "event_timestamp": 1582984800,
+                "firstHalfStart": 1582984800,
+                "secondHalfStart": 1582988400,
+                "round": "Regular Season - 26",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "Stadio Olimpico (Roma)",
+                "referee": "R. Abisso",
+                "homeTeam": {
+                    "team_id": 487,
+                    "team_name": "Lazio",
+                    "logo": "https://media.api-sports.io/football/teams/487.png"
+                },
+                "awayTeam": {
+                    "team_id": 500,
+                    "team_name": "Bologna",
+                    "logo": "https://media.api-sports.io/football/teams/500.png"
+                },
+                "goalsHomeTeam": 2,
+                "goalsAwayTeam": 0,
+                "score": {
+                    "halftime": "2-0",
+                    "fulltime": "2-0",
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 232783,
+                "league_id": 891,
+                "league": {
+                    "name": "Serie A",
+                    "country": "Italy",
+                    "logo": "https://media.api-sports.io/football/leagues/135.png",
+                    "flag": "https://media.api-sports.io/flags/it.svg"
+                },
+                "event_date": "2020-02-29T19:45:00+00:00",
+                "event_timestamp": 1583005500,
+                "firstHalfStart": 1583005500,
+                "secondHalfStart": 1583009100,
+                "round": "Regular Season - 26",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "Stadio San Paolo (Napoli)",
+                "referee": "M. Mariani",
+                "homeTeam": {
+                    "team_id": 492,
+                    "team_name": "Napoli",
+                    "logo": "https://media.api-sports.io/football/teams/492.png"
+                },
+                "awayTeam": {
+                    "team_id": 503,
+                    "team_name": "Torino",
+                    "logo": "https://media.api-sports.io/football/teams/503.png"
+                },
+                "goalsHomeTeam": 2,
+                "goalsAwayTeam": 1,
+                "score": {
+                    "halftime": "1-0",
+                    "fulltime": "2-1",
+                    "extratime": null,
+                    "penalty": null
+                }
+            }
+        ]
+    }
+}
 
+// https://api-football-v1.p.rapidapi.com/v2/fixtures/league/775/2020-04-22
 const LALIGA_04_22 = {
     "api": {
         "results": 10,
@@ -1402,9 +1923,174 @@ const LALIGA_04_22 = {
     }
 }
 
+// https://api-football-v1.p.rapidapi.com/v2/fixtures/league/775/2020-02-29
+const LALIGA_02_29 = {
+    "api": {
+        "results": 4,
+        "fixtures": [
+            {
+                "fixture_id": 214273,
+                "league_id": 775,
+                "league": {
+                    "name": "Primera Division",
+                    "country": "Spain",
+                    "logo": "https://media.api-sports.io/football/leagues/140.png",
+                    "flag": "https://media.api-sports.io/flags/es.svg"
+                },
+                "event_date": "2020-02-29T12:00:00+00:00",
+                "event_timestamp": 1582977600,
+                "firstHalfStart": 1582977600,
+                "secondHalfStart": 1582981200,
+                "round": "Regular Season - 26",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "Estadio Municipal de Ipurúa (Eibar)",
+                "referee": "Pablo González",
+                "homeTeam": {
+                    "team_id": 545,
+                    "team_name": "Eibar",
+                    "logo": "https://media.api-sports.io/football/teams/545.png"
+                },
+                "awayTeam": {
+                    "team_id": 539,
+                    "team_name": "Levante",
+                    "logo": "https://media.api-sports.io/football/teams/539.png"
+                },
+                "goalsHomeTeam": 3,
+                "goalsAwayTeam": 0,
+                "score": {
+                    "halftime": "1-0",
+                    "fulltime": "3-0",
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 214281,
+                "league_id": 775,
+                "league": {
+                    "name": "Primera Division",
+                    "country": "Spain",
+                    "logo": "https://media.api-sports.io/football/leagues/140.png",
+                    "flag": "https://media.api-sports.io/flags/es.svg"
+                },
+                "event_date": "2020-02-29T15:00:00+00:00",
+                "event_timestamp": 1582988400,
+                "firstHalfStart": 1582988400,
+                "secondHalfStart": 1582992000,
+                "round": "Regular Season - 26",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "Estadio de Mestalla (Valencia)",
+                "referee": "Adrián Cordero",
+                "homeTeam": {
+                    "team_id": 532,
+                    "team_name": "Valencia",
+                    "logo": "https://media.api-sports.io/football/teams/532.png"
+                },
+                "awayTeam": {
+                    "team_id": 543,
+                    "team_name": "Real Betis",
+                    "logo": "https://media.api-sports.io/football/teams/543.png"
+                },
+                "goalsHomeTeam": 2,
+                "goalsAwayTeam": 1,
+                "score": {
+                    "halftime": "0-0",
+                    "fulltime": "2-1",
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 214276,
+                "league_id": 775,
+                "league": {
+                    "name": "Primera Division",
+                    "country": "Spain",
+                    "logo": "https://media.api-sports.io/football/leagues/140.png",
+                    "flag": "https://media.api-sports.io/flags/es.svg"
+                },
+                "event_date": "2020-02-29T17:30:00+00:00",
+                "event_timestamp": 1582997400,
+                "firstHalfStart": 1582997400,
+                "secondHalfStart": 1583001000,
+                "round": "Regular Season - 26",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "Estadio Municipal de Butarque (Leganés)",
+                "referee": "Juan Martínez",
+                "homeTeam": {
+                    "team_id": 537,
+                    "team_name": "Leganes",
+                    "logo": "https://media.api-sports.io/football/teams/537.png"
+                },
+                "awayTeam": {
+                    "team_id": 542,
+                    "team_name": "Alaves",
+                    "logo": "https://media.api-sports.io/football/teams/542.png"
+                },
+                "goalsHomeTeam": 1,
+                "goalsAwayTeam": 1,
+                "score": {
+                    "halftime": "0-0",
+                    "fulltime": "1-1",
+                    "extratime": null,
+                    "penalty": null
+                }
+            },
+            {
+                "fixture_id": 214275,
+                "league_id": 775,
+                "league": {
+                    "name": "Primera Division",
+                    "country": "Spain",
+                    "logo": "https://media.api-sports.io/football/leagues/140.png",
+                    "flag": "https://media.api-sports.io/flags/es.svg"
+                },
+                "event_date": "2020-02-29T20:00:00+00:00",
+                "event_timestamp": 1583006400,
+                "firstHalfStart": 1583006400,
+                "secondHalfStart": 1583010000,
+                "round": "Regular Season - 26",
+                "status": "Match Finished",
+                "statusShort": "FT",
+                "elapsed": 90,
+                "venue": "Estadio Nuevo Los Cármenes (Granada)",
+                "referee": "Guillermo Cuadra",
+                "homeTeam": {
+                    "team_id": 715,
+                    "team_name": "Granada CF",
+                    "logo": "https://media.api-sports.io/football/teams/715.png"
+                },
+                "awayTeam": {
+                    "team_id": 538,
+                    "team_name": "Celta Vigo",
+                    "logo": "https://media.api-sports.io/football/teams/538.png"
+                },
+                "goalsHomeTeam": 0,
+                "goalsAwayTeam": 0,
+                "score": {
+                    "halftime": "0-0",
+                    "fulltime": "0-0",
+                    "extratime": null,
+                    "penalty": null
+                }
+            }
+        ]
+    }
+}
+
 module.exports = {
     BUNDESLIGA_04_18,
+    BUNDESLIGA_02_29,
+    PREMIER_02_29,
     PREMIER_04_18,
     LALIGA_04_22,
+    LALIGA_02_29,
     SERIEA_04_19,
+    SERIEA_02_29
 }
