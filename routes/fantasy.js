@@ -66,7 +66,9 @@ async function fetchStatic() {
   result.timestamp = Date.now();
   const jsonResult = JSON.stringify(result);
 
-  fs.writeFile('./static/staticFantasy.json', jsonResult, 'utf8');
+  fs.writeFile('./static/staticFantasy.json', jsonResult, 'utf8', (err) => {
+    if (err) console.error('Did not save static');
+  });
 
   return result;
 }
@@ -98,7 +100,7 @@ async function staticFantasy(req, res) {
   }
 
   // call some function here that processes static data (or do when we fetch and read)
-  return res.status(200).json(staticData);
+  return res.status(200).json({});
 }
 
 
