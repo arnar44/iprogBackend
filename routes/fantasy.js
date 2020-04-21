@@ -52,6 +52,24 @@ const router = express.Router();
 
 const staticPath = './static/staticFantasy.json';
 
+function getDate() {
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, '0');
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const yyyy = today.getFullYear();
+  return `${mm}/${dd}/${yyyy}`;
+}
+
+function shouldFetch(d2) {
+  const d1 = getDate();
+  const d1Split = d1.split('/');
+  const d2Split = d2.split('/');
+  if (parseInt(d1Split[2], 10) < parseInt(d2Split[2], 10)) return true;
+  if (parseInt(d1Split[1], 10) < parseInt(d2Split[1], 10)) return true;
+  if (parseInt(d1Split[0], 10) < parseInt(d2Split[0], 10)) return true;
+  return false;
+}
+
 async function fetchStatic() {
   const bootstrapUrl = 'https://fantasy.premierleague.com/api/bootstrap-static/';
   const response = await fetch(bootstrapUrl);
@@ -63,8 +81,16 @@ async function fetchStatic() {
   }
 
   const result = await response.json();
-  result.timestamp = Date.now();
-  const jsonResult = JSON.stringify(result);
+
+  const filteredRes = {
+    events: result.events,
+    total_players: result.total_players,
+    players: result.elements,
+    player_types: result.element_types,
+    timestamp: getDate(),
+  };
+
+  const jsonResult = JSON.stringify(filteredRes);
 
   fs.writeFile('./static/staticFantasy.json', jsonResult, 'utf8', (err) => {
     if (err) console.error('Did not save static');
@@ -79,8 +105,7 @@ function getBootstrap() {
   try {
     const data = fs.readFileSync(staticPath);
     pData = JSON.parse(data);
-    const timeDiff = parseInt((Date.now() - pData.timestamp) / (60 * 60 * 24 * 1000), 10);
-    fetchNew = timeDiff >= 1;
+    fetchNew = shouldFetch(pData.timestamp);
   } catch (err) {
     fetchNew = true;
   }
@@ -99,7 +124,8 @@ async function staticFantasy(req, res) {
     return res.status(staticData.status).json({ error: staticData.error });
   }
 
-  // call some function here that processes static data (or do when we fetch and read)
+  // get current gameweek stats
+
   return res.status(200).json({});
 }
 
