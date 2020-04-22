@@ -1,19 +1,7 @@
 /*
-Endpoints:
-https://fantasy.premierleague.com/api/bootstrap-static/
-Events: gameweek events
-game_settings: Fantasy game rules
-phases: start stop of months + overall (rules)
-total_players: ...
-elements: players
-elements_stats: labels for what players can do (rules)
-element_types: types of players (gk, defender...) (rules)
-
+Endpoints for user authenticated data:
 Team history:
 https://fantasy.premierleague.com/api/entry/{team_id}/history/
-
-Dream Team:
-https://fantasy.premierleague.com/api/dream-team/{week}
 
 Leagues: (league ids found in entry (above))
 https://fantasy.premierleague.com/api/leagues-classic/{league-id}/standings/
@@ -31,17 +19,6 @@ User gögn:
     my team
         -transfer suggestions
     league status
-
-Static gögn:
-    Current dream team
-    Current Gameweek
-        -avrg points
-        -highest-points
-        -chips played
-        -most-tranfered in
-        -most-selected
-        -top-player
-            -points
 */
 
 const express = require('express');
@@ -49,7 +26,6 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 
 const router = express.Router();
-
 const staticPath = './static/staticFantasy.json';
 
 function getDate() {
@@ -61,13 +37,7 @@ function getDate() {
 }
 
 function shouldFetch(d2) {
-  const d1 = getDate();
-  const d1Split = d1.split('/');
-  const d2Split = d2.split('/');
-  if (parseInt(d1Split[2], 10) < parseInt(d2Split[2], 10)) return true;
-  if (parseInt(d1Split[1], 10) < parseInt(d2Split[1], 10)) return true;
-  if (parseInt(d1Split[0], 10) < parseInt(d2Split[0], 10)) return true;
-  return false;
+  return Date.parse(d2) < Date.parse(getDate());
 }
 
 function getGameWeek(events) {
@@ -204,12 +174,8 @@ async function staticFantasy(req, res) {
     return res.status(staticData.status).json({ error: staticData.error });
   }
 
-  // get current gameweek stats
-  // fetch dream team -> process and send as part of return
-
   return res.status(200).json([staticData.data, staticData.dreamTeam]);
 }
-
 
 // Returns fantasy data that requires authentication
 async function myFantasy(req, res) {
