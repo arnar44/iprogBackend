@@ -15,6 +15,13 @@ const {
 } = require('./static-fixtures');
 
 const {
+  bundesligaId,
+  laligaId,
+  premId,
+  serieAId,
+} = require('../static/static-ids');
+
+const {
   BASE_URL_FOOTBALL_API: baseUrl,
   RAPID_API_KEY,
   RAPID_API_HOST,
@@ -32,10 +39,10 @@ async function listFixtures(req, res) {
     return res.status(401).json({ error: 'Invalid Api key' });
   }
 
-  const bundesliga = new URL(`/v2/fixtures/league/754/${date}`, baseUrl);
-  const laLiga = new URL(`/v2/fixtures/league/775/${date}`, baseUrl);
-  const prem = new URL(`/v2/fixtures/league/524/${date}`, baseUrl);
-  const serieA = new URL(`/v2/fixtures/league/891/${date}`, baseUrl);
+  const bundesliga = new URL(`/v2/fixtures/league/${bundesligaId}/${date}`, baseUrl);
+  const laLiga = new URL(`/v2/fixtures/league/${laligaId}/${date}`, baseUrl);
+  const prem = new URL(`/v2/fixtures/league/${premId}/${date}`, baseUrl);
+  const serieA = new URL(`/v2/fixtures/league/${serieAId}/${date}`, baseUrl);
 
 
   const options = {

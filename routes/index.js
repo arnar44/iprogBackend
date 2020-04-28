@@ -47,6 +47,9 @@ async function indexRoutes(req, res) {
       statistic: '/football/fixture/statistics/{fixtureId}',
       event: 'football/fixture/events/{fixtureId}',
     },
+    players: {
+      squad: '/players/{id}',
+    },
   });
 }
 
