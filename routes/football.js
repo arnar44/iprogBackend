@@ -14,6 +14,8 @@ const {
   SERIEA_02_29,
 } = require('./static-fixtures');
 
+const { EVENTS_157293, STATS_157293 } = require('./static-details');
+
 const {
   bundesligaId,
   laligaId,
@@ -119,11 +121,19 @@ function staticFixtures(req, res, next) {
 }
 
 function staticEvents(req, res, next) {
-  res.status(200).json({});
+  if (NODE_ENV !== 'static') {
+    return next();
+  }
+
+  return res.status(200).json({ data: EVENTS_157293.api });
 }
 
 function staticStats(req, res, next) {
-  res.status(200).json({});
+  if (NODE_ENV !== 'static') {
+    return next();
+  }
+
+  return res.status(200).json({ data: STATS_157293.api });
 }
 
 
