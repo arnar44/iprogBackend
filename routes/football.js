@@ -12,9 +12,9 @@ const {
   PREMIER_02_29,
   SERIEA_04_19,
   SERIEA_02_29,
-} = require('./static-fixtures');
+} = require('../static/static-fixtures');
 
-const { EVENTS_157293, STATS_157293 } = require('./static-details');
+const { EVENTS_157293, STATS_157293 } = require('../static/static-details');
 
 const {
   bundesligaId,
@@ -30,7 +30,6 @@ const {
   NODE_ENV,
 } = process.env;
 
-// Calls the scorebat API and returns the current higlights
 async function listFixtures(req, res) {
   const { date } = req.params;
   const apiKey = req.get('x-rapidapi-key');
@@ -45,7 +44,6 @@ async function listFixtures(req, res) {
   const laLiga = new URL(`/v2/fixtures/league/${laligaId}/${date}`, baseUrl);
   const prem = new URL(`/v2/fixtures/league/${premId}/${date}`, baseUrl);
   const serieA = new URL(`/v2/fixtures/league/${serieAId}/${date}`, baseUrl);
-
 
   const options = {
     method: 'GET',
@@ -87,9 +85,31 @@ async function listFixtures(req, res) {
   ]);
 }
 
-
 async function fixtureEvents(req, res) {
-  res.status(200).json({});
+  const { id } = req.params;
+
+  // Todo refactor repeated code
+  const apiKey = req.get('x-rapidapi-key');
+  const apiHost = req.get('x-rapidapi-host');
+
+  if (RAPID_API_KEY !== apiKey || RAPID_API_HOST !== apiHost) {
+    return res.status(401).json({ error: 'Invalid Api key' });
+  }
+
+  const url = new URL(`/v2/events/${id}`, baseUrl);
+
+  const options = {
+    method: 'GET',
+    headers: {
+      'x-rapidapi-key': apiKey,
+      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
+    },
+  };
+
+  const response = await fetch(url.href, options);
+  const json = await response.json();
+
+  res.status(200).json({ data: json.api });
 }
 
 async function fixtureStats(req, res) {
