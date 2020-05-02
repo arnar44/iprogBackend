@@ -1,6 +1,5 @@
 const express = require('express');
 const fetch = require('node-fetch');
-const fs = require('fs');
 
 const router = express.Router();
 
@@ -40,6 +39,14 @@ const options = {
     'x-rapidapi-host': RAPID_API_HOST,
   },
 };
+
+function sortTeams(arr) {
+  return arr.sort((a, b) => {
+    if (a.name > b.name) return 1;
+    if (b.name > a.name) return -1;
+    return 0;
+  });
+}
 
 function isNumeric(value) {
   return /^\d+$/.test(value);
@@ -89,11 +96,16 @@ async function leagueTeamMap(req, res) {
     resSerieA.json(),
   ]);
 
+  const sortedPrem = sortTeams(jsonPrem.api.teams);
+  const sortedBundes = sortTeams(jsonBundes.api.teams);
+  const sortedSerieA = sortTeams(jsonSerieA.api.teams);
+  const sortedLaLiga = sortTeams(jsonLaliga.api.teams);
+
   return res.status(200).json([
-    { title: 'Premier League', teams: jsonPrem.api.teams },
-    { title: 'Bundesliga', teams: jsonBundes.api.teams },
-    { title: 'Serie A', teams: jsonSerieA.api.teams },
-    { title: 'LaLiga', teams: jsonLaliga.api.teams },
+    { title: 'Premier League', teams: sortedPrem },
+    { title: 'Bundesliga', teams: sortedBundes },
+    { title: 'Serie A', teams: sortedSerieA },
+    { title: 'LaLiga', teams: sortedLaLiga },
   ]);
 }
 
@@ -120,11 +132,17 @@ function staticTeamMap(req, res, next) {
     return next();
   }
 
+  const sortedPrem = sortTeams(premTeams.api.teams);
+  const sortedBundes = sortTeams(bundesTeams.api.teams);
+  const sortedSerieA = sortTeams(serieATeams.api.teams);
+  const sortedLaLiga = sortTeams(laligaTeams.api.teams);
+
+
   return res.status(200).json([
-    { title: 'Premier League', teams: premTeams.api.teams },
-    { title: 'Bundesliga', teams: bundesTeams.api.teams },
-    { title: 'Serie A', teams: serieATeams.api.teams },
-    { title: 'LaLiga', teams: laligaTeams.api.teams },
+    { title: 'Premier League', teams: sortedPrem },
+    { title: 'Bundesliga', teams: sortedBundes },
+    { title: 'Serie A', teams: sortedSerieA },
+    { title: 'LaLiga', teams: sortedLaLiga },
   ]);
 }
 
