@@ -12,7 +12,11 @@ const readFileAsync = util.promisify(fs.readFile);
 async function query(q) {
   const client = new Client({ connectionString });
 
-  await client.connect();
+  client.connect((err) => {
+    if (err) {
+      console.error('connection error', err.stack);
+    }
+  });
 
   try {
     const result = await client.query(q);
