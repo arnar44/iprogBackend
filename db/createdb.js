@@ -9,8 +9,6 @@ const connectionString = process.env.DATABASE_URL || 'postgres://:@localhost/ipr
 
 const readFileAsync = util.promisify(fs.readFile);
 
-const schemaFile = './db/schema.sql';
-
 async function query(q) {
   const client = new Client({ connectionString });
 
@@ -29,14 +27,28 @@ async function query(q) {
   }
 }
 
-async function create() {
-  const data = await readFileAsync(schemaFile);
+async function setup() {
+  // Drop tables if they exist
+  const drop = await readFileAsync('./db/sql/drop.sql');
+  await query(drop.toString('utf-8'));
+  console.info('Tables dropped');
 
-  await query(data.toString('utf-8'));
+  // Create tables
+  const create = await readFileAsync('./db/sql/schema.sql');
+  await query(create.toString('utf-8'));
+  console.info('Tables created');
 
-  console.info('Schema created');
+  // Insert users
+  const insertUsers = await readFileAsync('./db/sql/insert-users.sql');
+  await query(insertUsers.toString('utf-8'));
+  console.info('Users inserted to tables');
+
+  // Insert teams
+  const insertTeams = await readFileAsync('./db/sql/insert-teams.sql');
+  await query(insertTeams.toString('utf-8'));
+  console.info('Users inserted to tables');
 }
 
-create().catch((err) => {
+setup().catch((err) => {
   console.error('Error creating schema', err);
 });
