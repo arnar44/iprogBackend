@@ -7,7 +7,7 @@ INSERT INTO
 
 -- lineup: 123123
 INSERT INTO
-  users
+  teams
     (id, team_name, owner_id, lineup)
   VALUES
     (2, 'Very cool team', 2, '{}');
