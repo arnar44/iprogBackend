@@ -6,6 +6,7 @@
     "start": "node app.js",
     "static": "NODE_ENV=static npm start",
     "eslint": "eslint *.js **/*.js",
+    "setup": "node ./db/createdb.js",
     "dev": "nodemon app.js"
   },
   "dependencies": {
