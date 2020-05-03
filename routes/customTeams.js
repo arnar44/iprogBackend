@@ -40,12 +40,15 @@ async function createRoute(req, res) {
 
 async function patchRoute(req, res) {
   const { id } = req.params;
-
-  const result = await patchTeam(id, req.body);
+  const result = await patchTeam(id, req.body, req.user[0].id);
 
   if (!result.success) {
     if (result.notfound) {
       return res.status(404).json({ error: 'Team not found' });
+    }
+
+    if (result.authentication) {
+      return res.status(401).json({ error: 'Not authorized to edit this team' });
     }
 
     return res.status(400).json(result.validation);

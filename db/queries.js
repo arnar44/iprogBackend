@@ -77,7 +77,7 @@ async function createUser({ username, name, password } = {}) {
 }
 
 async function readUsers(params, values) {
-  const q = `SELECT id, username, name, profile FROM users ${params}`;
+  const q = `SELECT id, username, email, profile FROM users ${params}`;
   const result = await query(q, values);
   if (result.error) {
     const msg = 'Error reading table users';
@@ -141,6 +141,7 @@ async function patchMe(req) {
 
 async function createTeam({ teamName, ownerId, lineup } = {}) {
   const validation = validateTeam({ teamName });
+  const stringTeam = JSON.stringify(lineup);
 
   if (validation.length > 0) {
     return {
@@ -151,7 +152,7 @@ async function createTeam({ teamName, ownerId, lineup } = {}) {
 
   const cleanName = xss(teamName);
   const cleanId = xss(ownerId);
-  const cleanLineup = xss(lineup);
+  const cleanLineup = xss(stringTeam);
 
   const q = 'INSERT INTO teams (team_name, owner_id, lineup) VALUES ($1, $2, $3) RETURNING *';
   const values = [cleanName, cleanId, cleanLineup];
@@ -170,7 +171,7 @@ async function createTeam({ teamName, ownerId, lineup } = {}) {
   };
 }
 
-async function patchTeam(id, body) {
+async function patchTeam(id, body, uId) {
   const conditions = 'WHERE id = $1';
   const oldTeam = await readAll('teams', conditions, [id]);
 
@@ -181,10 +182,15 @@ async function patchTeam(id, body) {
     };
   }
 
-  const {
-    teamName = oldTeam[0].teamName,
-    lineup = oldTeam[0].lineup,
-  } = body;
+  if (oldTeam[0].owner_id !== uId) {
+    return {
+      success: false,
+      authentication: true,
+    };
+  }
+
+  const lineup = body.lineup ? JSON.stringify(body.lineup) : oldTeam[0].lineup;
+  const { teamName = oldTeam[0].team_name } = body;
 
   const validation = validateTeam({ teamName });
 
