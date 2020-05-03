@@ -1,5 +1,18 @@
 const validator = require('validator');
 
+function validateTeam({ teamName }) {
+  const errors = [];
+
+  if (typeof teamName !== 'string' || !validator.isLength(teamName, { min: 1, max: 64 })) {
+    errors.push({
+      field: 'Team Name',
+      message: 'Team name must be a string of length 1 to 64 characters',
+    });
+  }
+
+  return errors;
+}
+
 function validateUser({
   username, password, name,
 }) {
@@ -41,5 +54,6 @@ function queryError(err, msg) {
 
 module.exports = {
   validateUser,
+  validateTeam,
   queryError,
 };

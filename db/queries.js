@@ -1,11 +1,12 @@
 const bcrypt = require('bcrypt');
 const { Client } = require('pg');
-// const xss = require('xss');
+const xss = require('xss');
 
 const connectionString = process.env.DATABASE_URL || 'postgres://:@localhost/iprog';
 
 const {
   validateUser,
+  validateTeam,
   queryError,
 } = require('../utils/validation');
 
@@ -138,6 +139,82 @@ async function patchMe(req) {
   };
 }
 
+async function createTeam({ teamName, ownerId, lineup } = {}) {
+  const validation = validateTeam({ teamName });
+
+  if (validation.length > 0) {
+    return {
+      success: false,
+      validation,
+    };
+  }
+
+  const cleanName = xss(teamName);
+  const cleanId = xss(ownerId);
+  const cleanLineup = xss(lineup);
+
+  const q = 'INSERT INTO teams (team_name, owner_id, lineup) VALUES ($1, $2, $3) RETURNING *';
+  const values = [cleanName, cleanId, cleanLineup];
+
+  const result = await query(q, values);
+
+  if (result.error) {
+    const msg = 'Error Creating Team';
+    return queryError(result.error, msg);
+  }
+
+  return {
+    success: true,
+    validation: [],
+    item: result.rows[0],
+  };
+}
+
+async function patchTeam(id, body) {
+  const conditions = 'WHERE id = $1';
+  const oldTeam = await readAll('teams', conditions, [id]);
+
+  if (!oldTeam[0]) {
+    return {
+      success: false,
+      notfound: true,
+    };
+  }
+
+  const {
+    teamName = oldTeam[0].teamName,
+    lineup = oldTeam[0].lineup,
+  } = body;
+
+  const validation = validateTeam({ teamName });
+
+  if (validation.length > 0) {
+    return {
+      success: false,
+      validation,
+    };
+  }
+
+  const cleanName = xss(teamName);
+  const cleanLineup = xss(lineup);
+
+  const q = 'UPDATE teams SET team_name = $1, lineup = $2 WHERE id = $3 RETURNING *';
+  const values = [cleanName, cleanLineup, id];
+
+  const result = await query(q, values);
+
+  if (result.error) {
+    const msg = 'Error updating team';
+    return queryError(result.error, msg);
+  }
+
+  return {
+    success: true,
+    validation: [],
+    item: result.rows[0],
+  };
+}
+
 
 module.exports = {
   readAll,
@@ -145,4 +222,6 @@ module.exports = {
   readUsers,
   createUser,
   patchMe,
+  createTeam,
+  patchTeam,
 };
