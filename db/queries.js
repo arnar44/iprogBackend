@@ -140,7 +140,7 @@ async function patchMe(req) {
 }
 
 async function createTeam({ teamName, ownerId, lineup } = {}) {
-  const validation = validateTeam({ teamName });
+  const validation = validateTeam({ teamName, lineup });
   const stringTeam = JSON.stringify(lineup);
 
   if (validation.length > 0) {
@@ -189,10 +189,12 @@ async function patchTeam(id, body, uId) {
     };
   }
 
-  const lineup = body.lineup ? JSON.stringify(body.lineup) : oldTeam[0].lineup;
-  const { teamName = oldTeam[0].team_name } = body;
+  const {
+    teamName = oldTeam[0].team_name,
+    lineup = JSON.parse(oldTeam[0].lineup),
+  } = body;
 
-  const validation = validateTeam({ teamName });
+  const validation = validateTeam({ teamName, lineup });
 
   if (validation.length > 0) {
     return {
@@ -202,7 +204,7 @@ async function patchTeam(id, body, uId) {
   }
 
   const cleanName = xss(teamName);
-  const cleanLineup = xss(lineup);
+  const cleanLineup = xss(JSON.stringify(lineup));
 
   const q = 'UPDATE teams SET team_name = $1, lineup = $2 WHERE id = $3 RETURNING *';
   const values = [cleanName, cleanLineup, id];
