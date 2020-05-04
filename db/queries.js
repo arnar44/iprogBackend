@@ -140,8 +140,7 @@ async function patchMe(req) {
 }
 
 async function createTeam({ teamName, ownerId, lineup } = {}) {
-  const validation = validateTeam({ teamName, lineup });
-  const stringTeam = JSON.stringify(lineup);
+  const validation = validateTeam(teamName);
 
   if (validation.length > 0) {
     return {
@@ -149,6 +148,8 @@ async function createTeam({ teamName, ownerId, lineup } = {}) {
       validation,
     };
   }
+
+  const stringTeam = JSON.stringify(lineup);
 
   const cleanName = xss(teamName);
   const cleanId = xss(ownerId);
@@ -194,8 +195,8 @@ async function patchTeam(id, body, uId) {
     lineup = JSON.parse(oldTeam[0].lineup),
   } = body;
 
-  const validation = validateTeam({ teamName, lineup });
 
+  const validation = validateTeam(teamName);
   if (validation.length > 0) {
     return {
       success: false,
