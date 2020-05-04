@@ -60,7 +60,7 @@ async function patchRoute(req, res) {
 }
 
 async function getAllMyTeams(req, res) {
-  const { id } = req.params;
+  const { id } = req.user[0];
 
   const conditions = 'WHERE owner_id = $1';
   const squad = await readAll('teams', conditions, [id]);
@@ -92,11 +92,11 @@ function catchErrors(fn) {
 }
 
 router.get('/', catchErrors(getAllCustomTeams));
-router.get('/:id', catchErrors(getCustomTeamById));
 router.post('/', requireAuthentication, catchErrors(createRoute));
+router.get('/:id', catchErrors(getCustomTeamById));
 router.patch('/:id', requireAuthentication, catchErrors(patchRoute));
-router.get('/my-teams/:id', requireAuthentication, catchErrors(getAllMyTeams));
 router.delete('/:id', requireAuthentication, catchErrors(deleteRoute));
+router.get('/my-teams/me', requireAuthentication, catchErrors(getAllMyTeams));
 
 
 module.exports = router;
