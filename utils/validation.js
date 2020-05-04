@@ -14,7 +14,7 @@ function validateTeam(teamName) {
 }
 
 function validateUser({
-  username, password, name,
+  username, password, email,
 }) {
   const errors = [];
 
@@ -32,10 +32,10 @@ function validateUser({
     });
   }
 
-  if (typeof name !== 'string' || !validator.isLength(name, { min: 1, max: 100 })) {
+  if (!validator.isEmail(email)) {
     errors.push({
-      field: 'name',
-      message: 'Name must be a string of length 1 to 100 characters',
+      field: 'email',
+      message: 'Email must be a valid email',
     });
   }
 
