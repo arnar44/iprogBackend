@@ -48,8 +48,8 @@ async function findByUsername(username) {
   return null;
 }
 
-async function createUser({ username, name, password } = {}) {
-  const validation = validateUser({ username, name, password });
+async function createUser({ username, email, password } = {}) {
+  const validation = validateUser({ username, email, password });
 
   if (validation.length > 0) {
     return {
@@ -60,9 +60,9 @@ async function createUser({ username, name, password } = {}) {
 
   const hashedPassword = await bcrypt.hash(password, 11);
 
-  const q = 'INSERT INTO users (username, name, password) VALUES ($1, $2, $3) RETURNING id, username, name, profile';
+  const q = 'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email, profile';
 
-  const result = await query(q, [username, name, hashedPassword]);
+  const result = await query(q, [username, email, hashedPassword]);
 
   if (result.error) {
     const msg = 'Error reading categories';

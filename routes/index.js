@@ -10,10 +10,10 @@ function catchErrors(fn) {
 
 async function register(req, res) {
   const {
-    username, name, password,
+    username, email, password,
   } = req.body;
 
-  const result = await createUser({ username, name, password });
+  const result = await createUser({ username, email, password });
 
   if (!result.success) {
     return res.status(400).json(result.validation);
