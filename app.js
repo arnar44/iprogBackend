@@ -8,6 +8,7 @@ const highlights = require('./routes/highlights');
 const fantasy = require('./routes/fantasy');
 const football = require('./routes/football');
 const players = require('./routes/players');
+const customTeams = require('./routes/customTeams');
 
 const app = express();
 app.use(express.json());
@@ -25,6 +26,7 @@ app.use('/highlights', highlights);
 app.use('/fantasy', fantasy);
 app.use('/football', football);
 app.use('/players', players);
+app.use('/custom-teams', customTeams);
 
 function notFoundHandler(req, res, next) { // eslint-disable-line
   res.status(404).json({ error: 'Not found' });
