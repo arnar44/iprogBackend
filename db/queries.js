@@ -224,6 +224,20 @@ async function patchTeam(id, body, uId) {
   };
 }
 
+async function del(id, req) {
+  const q = 'DELETE FROM teams WHERE id = $1 AND owner_id = $2 returning *';
+
+  const result = await query(q, [id, req.user[0].id]);
+
+  if (result.error) {
+    const msg = 'Error running query';
+    return queryError(result.error, msg);
+  }
+  const { rows } = result;
+
+  return rows;
+}
+
 
 module.exports = {
   readAll,
@@ -233,4 +247,5 @@ module.exports = {
   patchMe,
   createTeam,
   patchTeam,
+  del,
 };

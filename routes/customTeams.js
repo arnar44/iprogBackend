@@ -2,7 +2,9 @@ const express = require('express');
 
 const router = express.Router();
 const { requireAuthentication } = require('../utils/authenticate');
-const { readAll, createTeam, patchTeam } = require('../db/queries');
+const {
+  readAll, createTeam, patchTeam, del,
+} = require('../db/queries');
 
 async function getAllCustomTeams(req, res) {
   const squads = await readAll('teams', '', []);
@@ -70,6 +72,20 @@ async function getAllMyTeams(req, res) {
   return res.status(404).json({ error: 'No Teams Found For User' });
 }
 
+async function deleteRoute(req, res) {
+  const result = await del(req.params.id, req);
+
+  if (result.length === 0) {
+    return res.status(404).json({ error: 'Team Not Found' });
+  }
+
+  if (result.error) {
+    return res.status(400).json(result.error);
+  }
+
+  return res.status(200).json(result);
+}
+
 
 function catchErrors(fn) {
   return (req, res, next) => fn(req, res, next).catch(next);
@@ -80,5 +96,7 @@ router.get('/:id', catchErrors(getCustomTeamById));
 router.post('/', requireAuthentication, catchErrors(createRoute));
 router.patch('/:id', requireAuthentication, catchErrors(patchRoute));
 router.get('/my-teams/:id', requireAuthentication, catchErrors(getAllMyTeams));
+router.delete('/:id', requireAuthentication, catchErrors(deleteRoute));
+
 
 module.exports = router;
