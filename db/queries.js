@@ -10,6 +10,42 @@ const {
   queryError,
 } = require('../utils/validation');
 
+function userDuplicateCheck(err, errMsg, uName, email) {
+  const { code, detail } = err;
+  if (code === '23505') {
+    const ret = detail.indexOf('username') !== -1 ? 
+      [{
+        field: 'Username',
+        message: `Username ${uName} is taken`
+      }] 
+      : [{
+        field: 'Email',
+        message: `Email ${email} is registered to another user`;
+      }];
+    return {
+      success: false,
+      ret
+    };
+  }
+  return queryError(err, errMsg);
+}
+
+function teamDuplicateCheck(err, errMsg, teamN) {
+  const { code } = err;
+  if (code === '23505') {
+    const ret = [{
+        field: 'Team name',
+        message: `Team name ${teamB} is taken`
+      }]; 
+    return {
+      success: false,
+      ret
+    };
+  }
+  return queryError(err, errMsg);
+
+}
+
 async function query(q, values = []) {
   const client = new Client({ connectionString });
   await client.connect();
@@ -65,8 +101,8 @@ async function createUser({ username, email, password } = {}) {
   const result = await query(q, [username, email, hashedPassword]);
 
   if (result.error) {
-    const msg = 'Error reading categories';
-    return queryError(result.error, msg);
+    const errMsg = 'Error creating user';
+    return userDuplicateCheck(result.error, errMsg, username, email);
   }
 
   return {
@@ -87,28 +123,28 @@ async function readUsers(params, values) {
   return rows;
 }
 
-
 async function patchMe(req) {
   const qq = 'SELECT * FROM users WHERE id = $1';
   const user = await query(qq, [req.user[0].id]);
 
   const {
-    username,
-    name: oldName,
+    username: oldUsername,
+    email: oldEmail,
     password: oldPassword,
     id: userId,
   } = user.rows[0];
 
   const {
-    name = oldName,
+    username: oldUsername,
+    email = oldEmail,
     password = oldPassword,
   } = req.body;
 
   let validation;
   if (req.body.password) {
-    validation = validateUser({ username, name, password });
+    validation = validateUser({ username, email, password });
   } else {
-    validation = validateUser({ username, name, password: 'isGood' });
+    validation = validateUser({ username, email, password: 'isGood' });
   }
 
   if (validation.length > 0) {
@@ -122,14 +158,14 @@ async function patchMe(req) {
     ? await bcrypt.hash(password, 11)
     : password;
 
-  const q = 'UPDATE users SET (password, name)  = ($1, $2) WHERE id = $3 RETURNING id, username, name, profile';
-  const values = [hashedPassword, name, userId];
+  const q = 'UPDATE users SET (username, email, password)  = ($1, $2, $3) WHERE id = $4 RETURNING id, username, email, profile';
+  const values = [username, email, hashedPassword, userId];
 
   const result = await query(q, values);
 
   if (result.error) {
-    const msg = 'Error updating user';
-    return queryError(result.error, msg);
+    const errMsg = 'Error updating user';
+    return userDuplicateCheck(result.error, errMsg, username, email);
   }
 
   return {
@@ -161,8 +197,8 @@ async function createTeam({ teamName, ownerId, lineup } = {}) {
   const result = await query(q, values);
 
   if (result.error) {
-    const msg = 'Error Creating Team';
-    return queryError(result.error, msg);
+    const errMsg = 'Error creating Team'; 
+    return queryError(err, errMsg);
   }
 
   return {
@@ -213,8 +249,8 @@ async function patchTeam(id, body, uId) {
   const result = await query(q, values);
 
   if (result.error) {
-    const msg = 'Error updating team';
-    return queryError(result.error, msg);
+    const errMsg = 'Error updating Team'; 
+    return queryError(err, errMsg);
   }
 
   return {
