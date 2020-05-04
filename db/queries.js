@@ -13,18 +13,18 @@ const {
 function userDuplicateCheck(err, errMsg, uName, email) {
   const { code, detail } = err;
   if (code === '23505') {
-    const ret = detail.indexOf('username') !== -1 ? 
+    const validation = detail.indexOf('username') !== -1 ? 
       [{
         field: 'Username',
-        message: `Username ${uName} is taken`
+        message: `Username ${uName} is taken`,
       }] 
       : [{
         field: 'Email',
-        message: `Email ${email} is registered to another user`;
+        message: `Email ${email} is registered to another user`,
       }];
     return {
       success: false,
-      ret
+      validation,
     };
   }
   return queryError(err, errMsg);
@@ -33,13 +33,13 @@ function userDuplicateCheck(err, errMsg, uName, email) {
 function teamDuplicateCheck(err, errMsg, teamN) {
   const { code } = err;
   if (code === '23505') {
-    const ret = [{
+    const validation = [{
         field: 'Team name',
-        message: `Team name ${teamB} is taken`
+        message: `Team name ${teamB} is taken`,
       }]; 
     return {
       success: false,
-      ret
+      validation,
     };
   }
   return queryError(err, errMsg);
