@@ -123,58 +123,6 @@ async function readUsers(params, values) {
   return rows;
 }
 
-async function patchMe(req) {
-  const qq = 'SELECT * FROM users WHERE id = $1';
-  const user = await query(qq, [req.user[0].id]);
-
-  const {
-    username: oldUsername,
-    email: oldEmail,
-    password: oldPassword,
-    id: userId,
-  } = user.rows[0];
-
-  const {
-    username: oldUsername,
-    email = oldEmail,
-    password = oldPassword,
-  } = req.body;
-
-  let validation;
-  if (req.body.password) {
-    validation = validateUser({ username, email, password });
-  } else {
-    validation = validateUser({ username, email, password: 'isGood' });
-  }
-
-  if (validation.length > 0) {
-    return {
-      success: false,
-      validation,
-    };
-  }
-
-  const hashedPassword = req.body.password
-    ? await bcrypt.hash(password, 11)
-    : password;
-
-  const q = 'UPDATE users SET (username, email, password)  = ($1, $2, $3) WHERE id = $4 RETURNING id, username, email, profile';
-  const values = [username, email, hashedPassword, userId];
-
-  const result = await query(q, values);
-
-  if (result.error) {
-    const errMsg = 'Error updating user';
-    return userDuplicateCheck(result.error, errMsg, username, email);
-  }
-
-  return {
-    success: true,
-    validation: [],
-    item: result.rows,
-  };
-}
-
 async function createTeam({ teamName, ownerId, lineup } = {}) {
   const validation = validateTeam(teamName);
 
@@ -280,7 +228,6 @@ module.exports = {
   findByUsername,
   readUsers,
   createUser,
-  patchMe,
   createTeam,
   patchTeam,
   del,
