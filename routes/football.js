@@ -109,11 +109,61 @@ async function fixtureEvents(req, res) {
   const response = await fetch(url.href, options);
   const json = await response.json();
 
-  res.status(200).json({ data: json.api });
+  return res.status(200).json({ data: json.api });
 }
 
 async function fixtureStats(req, res) {
-  res.status(200).json({});
+  const { id } = req.params;
+
+  // Todo refactor repeated code
+  const apiKey = req.get('x-rapidapi-key');
+  const apiHost = req.get('x-rapidapi-host');
+
+  if (RAPID_API_KEY !== apiKey || RAPID_API_HOST !== apiHost) {
+    return res.status(401).json({ error: 'Invalid Api key' });
+  }
+
+  const urlFixture = new URL(`/v2/statistics/fixture/${id}`, baseUrl);
+
+  const options = {
+    method: 'GET',
+    headers: {
+      'x-rapidapi-key': apiKey,
+      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
+    },
+  };
+
+  const response = await fetch(urlFixture.href, options);
+  const json = await response.json();
+
+  return res.status(200).json({ data: json.api });
+}
+
+async function teamStats(req, res) {
+  const { id } = req.params;
+
+  // Todo refactor repeated code
+  const apiKey = req.get('x-rapidapi-key');
+  const apiHost = req.get('x-rapidapi-host');
+
+  if (RAPID_API_KEY !== apiKey || RAPID_API_HOST !== apiHost) {
+    return res.status(401).json({ error: 'Invalid Api key' });
+  }
+
+  const urlFixture = new URL(`/v2/statistics/fixture/${id}`, baseUrl);
+
+  const options = {
+    method: 'GET',
+    headers: {
+      'x-rapidapi-key': apiKey,
+      'x-rapidapi-host': 'api-football-v1.p.rapidapi.com',
+    },
+  };
+
+  const response = await fetch(urlFixture.href, options);
+  const json = await response.json();
+
+  return res.status(200).json({ data: json.api });
 }
 
 function staticFixtures(req, res, next) {
@@ -164,6 +214,6 @@ function catchErrors(fn) {
 router.get('/:date', staticFixtures, catchErrors(listFixtures));
 router.get('/fixture/events/:id', staticEvents, catchErrors(fixtureEvents));
 router.get('/fixture/statistics/:id', staticStats, catchErrors(fixtureStats));
-
+router.get('/team/statistics/:id', catchErrors(teamStats));
 
 module.exports = router;
