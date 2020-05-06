@@ -80,7 +80,7 @@ async function createUser({ username, email, password } = {}) {
 
   const hashedPassword = await bcrypt.hash(password, 11);
 
-  const q = 'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email, profile';
+  const q = 'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email';
 
   const result = await query(q, [username, email, hashedPassword]);
 
@@ -97,7 +97,7 @@ async function createUser({ username, email, password } = {}) {
 }
 
 async function readUsers(params, values) {
-  const q = `SELECT id, username, email, profile FROM users ${params}`;
+  const q = `SELECT id, username, email FROM users ${params}`;
   const result = await query(q, values);
   if (result.error) {
     const msg = 'Error reading table users';

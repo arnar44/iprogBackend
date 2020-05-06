@@ -58,8 +58,7 @@ async function login(req, res) {
     const user = {
       id: userAll.id,
       username: userAll.username,
-      name: userAll.name,
-      profile: userAll.profile,
+      email: userAll.email,
     };
     return res.json({ token, user });
   }

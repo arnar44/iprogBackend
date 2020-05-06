@@ -2,8 +2,7 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(64) UNIQUE NOT NULL,
     email VARCHAR(64) UNIQUE NOT NULL,
-    password VARCHAR(64) NOT NULL,
-    profile VARCHAR(124)
+    password VARCHAR(64) NOT NULL
 );
 
 CREATE TABLE teams (
