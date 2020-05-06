@@ -13,11 +13,11 @@ const {
 function userDuplicateCheck(err, errMsg, uName, email) {
   const { code, detail } = err;
   if (code === '23505') {
-    const validation = detail.indexOf('username') !== -1 ? 
-      [{
+    const validation = detail.indexOf('username') !== -1
+      ? [{
         field: 'Username',
         message: `Username ${uName} is taken`,
-      }] 
+      }]
       : [{
         field: 'Email',
         message: `Email ${email} is registered to another user`,
@@ -28,22 +28,6 @@ function userDuplicateCheck(err, errMsg, uName, email) {
     };
   }
   return queryError(err, errMsg);
-}
-
-function teamDuplicateCheck(err, errMsg, teamN) {
-  const { code } = err;
-  if (code === '23505') {
-    const validation = [{
-        field: 'Team name',
-        message: `Team name ${teamB} is taken`,
-      }]; 
-    return {
-      success: false,
-      validation,
-    };
-  }
-  return queryError(err, errMsg);
-
 }
 
 async function query(q, values = []) {
@@ -123,7 +107,9 @@ async function readUsers(params, values) {
   return rows;
 }
 
-async function createTeam({ teamName, ownerId, lineup } = {}) {
+async function createTeam({
+  teamName, ownerId, ownerName, lineup,
+} = {}) {
   const validation = validateTeam(teamName);
 
   if (validation.length > 0) {
@@ -133,20 +119,19 @@ async function createTeam({ teamName, ownerId, lineup } = {}) {
     };
   }
 
-  const stringTeam = JSON.stringify(lineup);
-
   const cleanName = xss(teamName);
   const cleanId = xss(ownerId);
-  const cleanLineup = xss(stringTeam);
+  const cleanLineup = xss(lineup);
+  const cleanUsername = xss(ownerName);
 
-  const q = 'INSERT INTO teams (team_name, owner_id, lineup) VALUES ($1, $2, $3) RETURNING *';
-  const values = [cleanName, cleanId, cleanLineup];
+  const q = 'INSERT INTO teams (team_name, owner_id, owner_username, lineup) VALUES ($1, $2, $3, $4) RETURNING *';
+  const values = [cleanName, cleanId, cleanUsername, cleanLineup];
 
   const result = await query(q, values);
 
   if (result.error) {
-    const errMsg = 'Error creating Team'; 
-    return queryError(err, errMsg);
+    const errMsg = 'Error creating Team';
+    return queryError(result.error, errMsg);
   }
 
   return {
@@ -176,7 +161,7 @@ async function patchTeam(id, body, uId) {
 
   const {
     teamName = oldTeam[0].team_name,
-    lineup = JSON.parse(oldTeam[0].lineup),
+    lineup = oldTeam[0].lineup,
   } = body;
 
 
@@ -189,7 +174,7 @@ async function patchTeam(id, body, uId) {
   }
 
   const cleanName = xss(teamName);
-  const cleanLineup = xss(JSON.stringify(lineup));
+  const cleanLineup = xss(lineup);
 
   const q = 'UPDATE teams SET team_name = $1, lineup = $2 WHERE id = $3 RETURNING *';
   const values = [cleanName, cleanLineup, id];
@@ -197,8 +182,8 @@ async function patchTeam(id, body, uId) {
   const result = await query(q, values);
 
   if (result.error) {
-    const errMsg = 'Error updating Team'; 
-    return queryError(err, errMsg);
+    const errMsg = 'Error updating Team';
+    return queryError(result.error, errMsg);
   }
 
   return {
