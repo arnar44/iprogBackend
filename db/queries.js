@@ -96,6 +96,58 @@ async function createUser({ username, email, password } = {}) {
   };
 }
 
+async function patchMe(req) {
+  const qq = 'SELECT * FROM users WHERE id = $1';
+  const user = await query(qq, [req.user[0].id]);
+
+  const {
+    username: oldUsername,
+    email: oldEmail,
+    password: oldPassword,
+    id,
+  } = user.rows[0];
+
+  const {
+    username = oldUsername,
+    email = oldEmail,
+    password = oldPassword,
+  } = req.body;
+
+  let validation;
+  if (req.body.password) {
+    validation = validateUser({ username, password, email });
+  } else {
+    validation = validateUser({ username, password: 'isGood', email });
+  }
+
+  if (validation.length > 0) {
+    return {
+      success: false,
+      validation,
+    };
+  }
+
+  const hashedPassword = req.body.password
+    ? await bcrypt.hash(password, 11)
+    : oldPassword;
+
+  const q = 'UPDATE users SET (password, username, email)  = ($1, $2, $3) WHERE id = $4 RETURNING id, username, email';
+  const values = [hashedPassword, username, email, id];
+
+  const result = await query(q, values);
+
+  if (result.error) {
+    const msg = 'Error updating user';
+    return queryError(result.error, msg);
+  }
+
+  return {
+    success: true,
+    validation: [],
+    item: result.rows,
+  };
+}
+
 async function readUsers(params, values) {
   const q = `SELECT id, username, email FROM users ${params}`;
   const result = await query(q, values);
@@ -213,6 +265,7 @@ module.exports = {
   findByUsername,
   readUsers,
   createUser,
+  patchMe,
   createTeam,
   patchTeam,
   del,
