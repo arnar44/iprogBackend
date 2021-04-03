@@ -1,6 +1,8 @@
 require('dotenv').config();
 
 const express = require('express');
+const https = require('https');
+const fs = require('fs');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
@@ -12,18 +14,10 @@ const customTeams = require('./routes/customTeams');
 
 const app = express();
 
-const {
-  PORT: port = 3000,
-  HOST: host = '127.0.0.1',
-} = process.env;
-
-app.use((req, res, next) => {
-  if ((req.get('X-Forwarded-Proto') !== 'https')) {
-    res.redirect('https://' + req.get('Host') + req.url);
-  } else
-    next();
-});
-
+const credentials = {
+  key: fs.readFileSync('./server/key.pem'),
+  cert: fs.readFileSync('./server/cert.pem')
+};
 
 app.use(express.json());
 
@@ -59,6 +53,11 @@ function errorHandler(err, req, res, next) { // eslint-disable-line
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.info(`Server running at http://${host}:${port}/`);
-});
+const {
+  PORT: port = 3000,
+  HOST: host = '127.0.0.1',
+} = process.env;
+
+const httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(port, () => console.info(`Server running at https://${host}:${port}/`));
