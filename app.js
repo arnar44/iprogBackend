@@ -51,4 +51,4 @@ const {
   HOST: host = '127.0.0.1',
 } = process.env;
 
-app.listen(port, () => console.info(`Server running at https://${host}:${port}/`));
+app.listen(port, () => console.info(`Server running at http://${host}:${port}/`));
