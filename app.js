@@ -1,8 +1,6 @@
 require('dotenv').config();
 
 const express = require('express');
-const https = require('https');
-const fs = require('fs');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
@@ -13,11 +11,6 @@ const players = require('./routes/players');
 const customTeams = require('./routes/customTeams');
 
 const app = express();
-
-const credentials = {
-  key: fs.readFileSync('./server/key.pem'),
-  cert: fs.readFileSync('./server/cert.pem')
-};
 
 app.use(express.json());
 
@@ -58,6 +51,4 @@ const {
   HOST: host = '127.0.0.1',
 } = process.env;
 
-const httpsServer = https.createServer(credentials, app);
-
-httpsServer.listen(port, () => console.info(`Server running at https://${host}:${port}/`));
+app.listen(port, () => console.info(`Server running at https://${host}:${port}/`));
