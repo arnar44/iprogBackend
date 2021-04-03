@@ -31,7 +31,7 @@ function userDuplicateCheck(err, errMsg, uName, email) {
 }
 
 async function query(q, values = []) {
-  const client = new Client({ connectionString, ssl: true });
+  const client = new Client({ connectionString, ssl: { rejectUnauthorized: false }  });
   await client.connect();
 
   try {
