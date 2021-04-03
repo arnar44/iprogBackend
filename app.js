@@ -18,8 +18,6 @@ const {
 } = process.env;
 
 app.use((req, res, next) => {
-  if(!process.env.host) return next();
-
   if ((req.get('X-Forwarded-Proto') !== 'https')) {
     res.redirect('https://' + req.get('Host') + req.url);
   } else
