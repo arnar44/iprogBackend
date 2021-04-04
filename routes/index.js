@@ -37,10 +37,6 @@ async function indexRoutes(req, res) {
       profile: '/users/me/profile',
     },
     highlights: '/highlights',
-    fantasy: {
-      static: '/fantasy',
-      myFantasy: '/fantasy/my-fantasy',
-    },
     football: {
       fixtures: '/football/{YYYY-MM-DD}',
       statistic: '/football/fixture/statistics/{fixtureId}',

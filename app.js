@@ -5,7 +5,6 @@ const express = require('express');
 const index = require('./routes/index');
 const users = require('./routes/users');
 const highlights = require('./routes/highlights');
-const fantasy = require('./routes/fantasy');
 const football = require('./routes/football');
 const players = require('./routes/players');
 const customTeams = require('./routes/customTeams');
@@ -24,7 +23,6 @@ app.use((req, res, next) => {
 app.use('/', index);
 app.use('/users', users);
 app.use('/highlights', highlights);
-app.use('/fantasy', fantasy);
 app.use('/football', football);
 app.use('/players', players);
 app.use('/custom-teams', customTeams);
