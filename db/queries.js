@@ -61,6 +61,11 @@ async function findByUsername(username) {
 
   const result = await query(q, [username]);
 
+  if (result.error) {
+    const msg = 'Error reading table users';
+    return queryError(result.error, msg);
+  }
+
   if (result.rowCount === 1) {
     return result.rows[0];
   }
