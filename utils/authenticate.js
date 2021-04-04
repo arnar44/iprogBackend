@@ -3,7 +3,11 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { Strategy, ExtractJwt } = require('passport-jwt');
 const jwt = require('jsonwebtoken');
-const users = require('../db/queries');
+
+const {
+  findByUsername,
+  getUserById,
+} = require('../db/queries');
 
 const auth = express();
 
@@ -22,17 +26,18 @@ const jwtOptions = {
   secretOrKey: jwtSecret,
 };
 
-async function strat(data, next) {
-  const user = await users.readUsers('WHERE id = $1', [data.id]);
+async function verify(jwtData, done) {
+  const { id } = jwtData;
+  const result = await getUserById(id);
 
-  if (user) {
-    next(null, user);
-  } else {
-    next(null, false);
+  if (!result.success || !result.id) {
+    return done(null, false);
   }
+
+  return done(done, result);
 }
 
-passport.use(new Strategy(jwtOptions, strat));
+passport.use(new Strategy(jwtOptions, verify));
 auth.use(passport.initialize());
 
 async function comparePasswords(hash, password) {
@@ -43,7 +48,7 @@ async function comparePasswords(hash, password) {
 
 async function login(req, res) {
   const { username, password } = req.body;
-  const userAll = await users.findByUsername(username);
+  const userAll = await findByUsername(username);
 
   if (!userAll) {
     return res.status(401).json({ error: 'No such user' });
@@ -55,11 +60,13 @@ async function login(req, res) {
     const payload = { id: userAll.id };
     const tokenOptions = { expiresIn: parseInt(tokenLifetime, 10) };
     const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
+
     const user = {
       id: userAll.id,
       username: userAll.username,
       email: userAll.email,
     };
+
     return res.json({ token, user });
   }
 

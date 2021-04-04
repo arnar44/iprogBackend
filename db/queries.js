@@ -31,7 +31,7 @@ function userDuplicateCheck(err, errMsg, uName, email) {
 }
 
 async function query(q, values = []) {
-  const client = new Client({ connectionString, ssl: { rejectUnauthorized: false }  });
+  const client = new Client({ connectionString, ssl: { rejectUnauthorized: false } });
   await client.connect();
 
   try {
@@ -159,6 +159,26 @@ async function readUsers(params, values) {
   return rows;
 }
 
+async function getUserById(id) {
+  const q = 'SELECT id, username, email FROM users WHERE id = $1';
+
+  const result = await query(q, [id]);
+
+  if (result.error) {
+    const msg = 'Error reading table users';
+    return queryError(result.error, msg);
+  }
+
+  if (result.rows.length === 0) {
+    return {
+      success: false,
+      error: `Not found - No user with id = ${id} in user table`,
+    };
+  }
+
+  return result.rows[0];
+}
+
 async function createTeam({
   teamName, ownerId, ownerName, lineup,
 } = {}) {
@@ -261,12 +281,13 @@ async function del(id, req) {
 
 
 module.exports = {
-  readAll,
-  findByUsername,
-  readUsers,
-  createUser,
-  patchMe,
   createTeam,
-  patchTeam,
+  createUser,
   del,
+  findByUsername,
+  getUserById,
+  patchMe,
+  patchTeam,
+  readAll,
+  readUsers,
 };
