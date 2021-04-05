@@ -1,23 +1,10 @@
 const express = require('express');
-const { login } = require('../utils/authenticate');
-const { createUser } = require('../db/queries');
+const { login, register } = require('../utils/authenticate');
 
 const router = express.Router();
 
 function catchErrors(fn) {
   return (req, res, next) => fn(req, res, next).catch(next);
-}
-
-async function register(req, res) {
-  const { username, email, password } = req.body;
-
-  const result = await createUser({ username, email, password });
-
-  if (!result.success) {
-    return res.status(result.code).json(result.obj);
-  }
-
-  return res.status(201).json(result.item);
 }
 
 async function indexRoutes(req, res) {

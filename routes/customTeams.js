@@ -14,6 +14,7 @@ const {
   readAllRecords,
 } = require('../db/queries');
 
+
 function catchErrors(fn) {
   return (req, res, next) => fn(req, res, next).catch(next);
 }
@@ -29,11 +30,11 @@ async function getAllCustomTeams(req, res) {
 }
 
 async function createRoute(req, res) {
-  const { teamName, ownerName, lineup } = req.body;
-  const { id } = req.user;
+  const { teamName, lineup } = req.body;
+  const { id, username } = req.user;
 
   const result = await createTeam({
-    teamName, ownerName, lineup, id,
+    teamName, ownerName: username, lineup, id,
   });
 
   if (!result.success) {
@@ -54,12 +55,16 @@ async function getCustomTeamById(req, res) {
 async function patchRoute(req, res) {
   const oldTeam = req.record;
   const {
-    // eslint-disable-next-line camelcase
-    team_name,
+    teamName,
     lineup,
   } = req.body;
 
-  const result = await patchTeam({ oldTeam, name: team_name, lineup });
+  // eslint-disable-next-line camelcase
+  if (!teamName && !lineup) {
+    return res.status(200).json(oldTeam);
+  }
+
+  const result = await patchTeam({ oldTeam, name: teamName, lineup });
 
   if (!result.success) {
     return res.status(result.code).json(result.obj);

@@ -9,9 +9,8 @@ const {
   validateTeam,
 } = require('../utils/validation');
 
-
 async function query(q, values = []) {
-  const client = new Client({ connectionString, ssl: { rejectUnauthorized: false } });
+  const client = new Client({ connectionString });
   await client.connect();
 
   try {
@@ -24,10 +23,10 @@ async function query(q, values = []) {
   }
 }
 
-function queryError(
+function queryError({
   error, details, code = 400, validation = [],
-) {
-  console.error(error, details, validation);
+}) {
+  if (validation.length === 0) console.error(error, details, validation);
 
   return {
     success: false,
@@ -123,7 +122,7 @@ async function deleteRecordById({ id, table, columns = '*' } = {}) {
 
 /* User queries */
 
-async function createUser({ username, email, password } = {}) {
+async function createUser({ username = '', email = '', password = '' }) {
   const validation = validateUser({ username, email, password });
 
   if (validation.length > 0) {
@@ -173,7 +172,7 @@ async function getUserById(id) {
     return queryError({ error: 'Error finding user', details: result.error });
   }
 
-  if (result.rowCount === 0) {
+  if (result.rows.length === 0) {
     return queryError({ error: 'User not found', code: 404 });
   }
 
@@ -247,18 +246,17 @@ async function patchUser({
 async function createTeam({
   teamName, id, ownerName, lineup,
 } = {}) {
-  const validation = validateTeam(teamName);
+  const cleanName = xss(teamName);
+  const cleanLineup = xss(lineup);
+
+  const validation = validateTeam(teamName, lineup);
 
   if (validation.length > 0) {
     return queryError({ error: 'Validation error', validation });
   }
 
-  const cleanName = xss(teamName);
-  const cleanLineup = xss(lineup);
-  const cleanUsername = xss(ownerName);
-
   const q = 'INSERT INTO teams (team_name, owner_id, owner_username, lineup) VALUES ($1, $2, $3, $4) RETURNING *';
-  const values = [cleanName, id, cleanUsername, cleanLineup];
+  const values = [cleanName, id, ownerName, cleanLineup];
 
   const result = await query(q, values);
 
@@ -273,13 +271,13 @@ async function patchTeam({ oldTeam, name, lineup } = {}) {
   const cleanName = name ? xss(name) : oldTeam.team_name;
   const cleanLineup = lineup ? xss(lineup) : oldTeam.lineup;
 
-  const validation = validateTeam(cleanName);
+  const validation = validateTeam(cleanName, cleanLineup);
   if (validation.length > 0) {
     return queryError({ error: 'Validation error', validation });
   }
 
   const q = 'UPDATE teams SET (team_name, lineup) = ($1, $2) WHERE id = $3 RETURNING *';
-  const result = query(q, [cleanName, cleanLineup, oldTeam.id]);
+  const result = await query(q, [cleanName, cleanLineup, oldTeam.id]);
 
   if (result.error) {
     return queryError({ error: 'Error updating team', details: result.error });

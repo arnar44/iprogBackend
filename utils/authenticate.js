@@ -5,6 +5,7 @@ const { Strategy, ExtractJwt } = require('passport-jwt');
 const jwt = require('jsonwebtoken');
 
 const {
+  createUser,
   getRecordById,
   getUserById,
   getUserByUsername,
@@ -33,12 +34,12 @@ async function verify(jwtData, done) {
 
   if (!result.success) {
     // User not found -> send 401 unauth
-    if (result.code === 404) return done(null, false);
+    if (result.code === 404) return done(null, false, { name: 'Not found' });
     // Otherwise there was a query error -> error gets handled later
     return done(result.obj);
   }
 
-  return done(done, result.item);
+  return done(null, result.item);
 }
 
 passport.use(new Strategy(jwtOptions, verify));
@@ -62,7 +63,7 @@ async function login(req, res) {
   const passwordIsCorrect = await comparePasswords(password, userInfo.password);
 
   if (passwordIsCorrect) {
-    const payload = { id: result.id };
+    const payload = { id: userInfo.id };
     const tokenOptions = { expiresIn: parseInt(tokenLifetime, 10) };
     const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
 
@@ -85,6 +86,18 @@ async function login(req, res) {
   };
 
   return res.status(401).json(serverResponse);
+}
+
+async function register(req, res) {
+  const { username, email, password } = req.body;
+
+  const result = await createUser({ username, email, password });
+
+  if (!result.success) {
+    return res.status(result.code).json(result.obj);
+  }
+
+  return res.status(201).json(result.item);
 }
 
 function requireAuthentication(req, res, next) {
@@ -163,6 +176,7 @@ const requireOwnerAuth = [requireAuthentication, catchErrors(addRecordToRequest)
 module.exports = {
   addRecordToRequest,
   login,
+  register,
   requireAuthentication,
   requireOwnerAuth,
 };

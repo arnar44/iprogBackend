@@ -38,6 +38,12 @@ function isItMe(req, res, next) {
 async function getUserByIdRoute(req, res) {
   const { id } = req.params;
 
+  const parsedId = parseFloat(id);
+  // eslint-disable-next-line no-bitwise
+  if (Number.isNaN(id) || (parsedId | 0) !== parsedId) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
   const result = await getUserById(id);
 
   if (!result.success) {
