@@ -16,10 +16,12 @@ async function indexRoutes(req, res) {
     users: {
       users: '/users',
       user: '/users/{id}',
-    },
-    me: {
       me: '/users/me',
-      profile: '/users/me/profile',
+    },
+    customTeams: {
+      customTeams: '/custom-teams',
+      customTeam: '/custom-teams/{id}',
+      myCustomTeams: 'custom-teams/my-teams/me',
     },
     highlights: '/highlights',
     football: {
