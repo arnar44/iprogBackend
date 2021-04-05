@@ -5,8 +5,9 @@ const { Strategy, ExtractJwt } = require('passport-jwt');
 const jwt = require('jsonwebtoken');
 
 const {
-  findByUsername,
+  getRecordById,
   getUserById,
+  getUserByUsername,
 } = require('../db/queries');
 
 const auth = express();
@@ -30,11 +31,14 @@ async function verify(jwtData, done) {
   const { id } = jwtData;
   const result = await getUserById(id);
 
-  if (!result.success || !result.id) {
-    return done(null, false);
+  if (!result.success) {
+    // User not found -> send 401 unauth
+    if (result.code === 404) return done(null, false);
+    // Otherwise there was a query error -> error gets handled later
+    return done(result.obj);
   }
 
-  return done(done, result);
+  return done(done, result.item);
 }
 
 passport.use(new Strategy(jwtOptions, verify));
@@ -48,17 +52,14 @@ async function comparePasswords(hash, password) {
 
 async function login(req, res) {
   const { username, password } = req.body;
-  const result = await findByUsername(username);
+  const result = await getUserByUsername(username);
 
   if (!result.success) {
-    return res.status(500).json(result.validation);
+    return res.status(result.code).json(result.obj);
   }
 
-  if (!result) {
-    return res.status(401).json({ error: 'No such user' });
-  }
-
-  const passwordIsCorrect = await comparePasswords(password, result.password);
+  const userInfo = result.item;
+  const passwordIsCorrect = await comparePasswords(password, userInfo.password);
 
   if (passwordIsCorrect) {
     const payload = { id: result.id };
@@ -66,15 +67,24 @@ async function login(req, res) {
     const token = jwt.sign(payload, jwtOptions.secretOrKey, tokenOptions);
 
     const user = {
-      id: result.id,
-      username: result.username,
-      email: result.email,
+      id: userInfo.id,
+      username: userInfo.username,
+      email: userInfo.email,
     };
 
     return res.json({ token, user });
   }
 
-  return res.status(401).json({ error: 'Invalid password' });
+  const serverResponse = {
+    error: 'Invalid password',
+    details: '',
+    validation: [{
+      field: 'password',
+      message: 'Invalid password',
+    }],
+  };
+
+  return res.status(401).json(serverResponse);
 }
 
 function requireAuthentication(req, res, next) {
@@ -97,7 +107,62 @@ function requireAuthentication(req, res, next) {
   )(req, res, next);
 }
 
+async function addRecordToRequest(req, res, next) {
+  const reqToParams = {
+    customteams: {
+      table: 'teams',
+      columns: '*',
+    },
+  };
+
+  const id = Number(req.params.id);
+  const reqBase = req.baseUrl.replace('/', '').replace('-', '');
+
+  const parsedId = parseFloat(id);
+
+  // eslint-disable-next-line no-bitwise
+  if (Number.isNaN(id) || (parsedId | 0) !== parsedId) {
+    return res.status(400).json({ error: 'ID is not an integer' });
+  }
+
+  const params = reqToParams[reqBase];
+  // Check if we know what record to get
+  if (!params) {
+    return res.status(400).json({ error: `Record associated with ${reqBase} cant be looked up` });
+  }
+
+  const result = await getRecordById({ id, table: params.table, columns: params.columns });
+
+  if (!result.success) {
+    return res.status(result.code).json(result.obj);
+  }
+
+  req.record = result.item;
+
+  return next();
+}
+
+function requireOwner(req, res, next) {
+  const { id } = req.user;
+  // eslint-disable-next-line camelcase
+  const { owner_id } = req.record;
+
+  // eslint-disable-next-line camelcase
+  if (id === owner_id) return next();
+
+  return res.status(403).json({ error: 'Forbidden' });
+}
+
+function catchErrors(fn) {
+  return (req, res, next) => fn(req, res, next).catch(next);
+}
+
+const requireOwnerAuth = [requireAuthentication, catchErrors(addRecordToRequest), requireOwner];
+
+
 module.exports = {
+  addRecordToRequest,
   login,
   requireAuthentication,
+  requireOwnerAuth,
 };

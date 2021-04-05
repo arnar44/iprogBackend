@@ -2,10 +2,10 @@ const express = require('express');
 const { requireAuthentication } = require('../utils/authenticate');
 
 const {
-  patchMe,
-  readUsers,
+  getAllUsers,
+  getUserById,
+  patchUser,
 } = require('../db/queries');
-const { getAll } = require('../utils/utils');
 
 const router = express.Router();
 
@@ -13,53 +13,57 @@ function catchErrors(fn) {
   return (req, res, next) => fn(req, res, next).catch(next);
 }
 
-async function userById(req, res) {
-  const { id } = req.params;
+async function getAllUsersRoute(req, res) {
+  const { offset = 0, limit = 10 } = req.query;
+  const url = req.get('host');
 
-  const conditions = 'WHERE id = $1';
-  const result = await readUsers(conditions, [id]);
-
-  if (result.error) {
-    return res.status(400).json(result.error);
-  }
-
-  if (result.length === 0) {
-    return res.status(404).json({ error: `User id: ${id} not found` });
-  }
-
-  return res.status(200).json(result);
-}
-
-function isItMe(req, res, next) {
-  const { id } = req.params;
-  if (id === 'me') {
-    const { user } = req;
-    return res.status(200).json(user);
-  }
-  return next();
-}
-
-// Fall sem kallar á readUsers til að lesa notendur
-async function userRoute(req, res) {
-  const result = await getAll(req, 'users');
-  return res.json(result);
-}
-
-async function patchUser(req, res) {
-  const result = await patchMe(req);
+  const result = await getAllUsers(offset, limit, url);
 
   if (!result.success) {
-    const errorMsg = result.error
-      ? res.status(400).json(result.error)
-      : res.status(400).json(result.validation);
-    return errorMsg;
+    return res.status(result.code).json(result.obj);
   }
 
   return res.status(200).json(result.item);
 }
 
-router.get('/:id', requireAuthentication, isItMe, catchErrors(userById));
-router.get('/', requireAuthentication, catchErrors(userRoute));
-router.patch('/me', requireAuthentication, catchErrors(patchUser));
+function isItMe(req, res, next) {
+  const { id } = req.params;
+  const { user } = req;
+  if (id === 'me' || id === user.id) {
+    return res.status(200).json(user);
+  }
+  return next();
+}
+
+async function getUserByIdRoute(req, res) {
+  const { id } = req.params;
+
+  const result = await getUserById(id);
+
+  if (!result.success) {
+    return res.status(result.code).json(result.obj);
+  }
+
+  return res.status(200).json(result.item);
+}
+
+async function patchUserRoute(req, res) {
+  const { user } = req;
+  const { username, email, password } = req.body;
+
+  const result = await patchUser({
+    user, newUsername: username, newEmail: email, newPassword: password,
+  });
+
+  if (!result.success) {
+    return res.status(result.code).json(result.obj);
+  }
+
+  return res.status(200).json(result.item);
+}
+
+router.get('/', requireAuthentication, catchErrors(getAllUsersRoute));
+router.get('/:id', requireAuthentication, isItMe, catchErrors(getUserByIdRoute));
+router.patch('/me', requireAuthentication, catchErrors(patchUserRoute));
 
 module.exports = router;

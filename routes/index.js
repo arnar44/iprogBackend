@@ -9,14 +9,12 @@ function catchErrors(fn) {
 }
 
 async function register(req, res) {
-  const {
-    username, email, password,
-  } = req.body;
+  const { username, email, password } = req.body;
 
   const result = await createUser({ username, email, password });
 
   if (!result.success) {
-    return res.status(400).json(result.validation);
+    return res.status(result.code).json(result.obj);
   }
 
   return res.status(201).json(result.item);
