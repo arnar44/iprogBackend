@@ -74,3 +74,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxN
 
 ###
 GET http://localhost:3001/highlights
+
+###
+GET http://localhost:3001/players
+
+###
+GET http://localhost:3001/players/42
+
+###
+GET http://localhost:3001/football/2021-04-05
+
+###
+GET http://localhost:3001/football/fixture/events/592795
+
+###
+GET http://localhost:3001/football/fixture/statistics/592795

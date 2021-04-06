@@ -27,9 +27,10 @@ async function indexRoutes(req, res) {
     football: {
       fixtures: '/football/{YYYY-MM-DD}',
       statistic: '/football/fixture/statistics/{fixtureId}',
-      event: 'football/fixture/events/{fixtureId}',
+      event: '/football/fixture/events/{fixtureId}',
     },
     players: {
+      leagueTeams: '/players',
       squad: '/players/{id}',
     },
   });
