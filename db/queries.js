@@ -139,6 +139,15 @@ async function createUser({ username = '', email = '', password = '' }) {
   const result = await query(q, [cleanUsername, cleanEmail, cleanPassword]);
 
   if (result.error) {
+    if (result.error.code === '23505') {
+      const errObj = result.error.detail.includes('email')
+        ? { field: 'email', message: 'Email is already registered' }
+        : { field: 'username', message: 'Username is already registered' };
+
+      return queryError({ error: 'Duplicate error', validation: [errObj] });
+    }
+
+
     return queryError({ error: 'Error creating user', details: result.error });
   }
 
@@ -190,12 +199,7 @@ async function getUserByUsername(username) {
   }
 
   if (result.rowCount === 0) {
-    const validation = {
-      field: 'username',
-      message: `No user with username = ${username} found`,
-    };
-
-    return queryError({ error: 'Validation error', validation });
+    return queryError({ error: 'Invalid username' });
   }
 
   if (result.rowCount > 1) {
@@ -235,6 +239,14 @@ async function patchUser({
   const result = await query(q, values);
 
   if (result.error) {
+    if (result.error.code === '23505') {
+      const errObj = result.error.detail.includes('email')
+        ? { field: 'email', message: 'Email is already registered' }
+        : { field: 'username', message: 'Username is already registered' };
+
+      return queryError({ error: 'Duplicate error', validation: [errObj] });
+    }
+
     return queryError({ error: 'Error updating user', details: result.error });
   }
 
