@@ -1,0 +1,91 @@
+GET http://localhost:3001/
+
+###
+POST http://localhost:3001/register
+Content-Type: application/json
+
+{
+  "username": "paul",
+  "email": "paul@atm.se",
+  "password": "123456"
+}
+
+###
+POST http://localhost:3001/login
+Content-Type: application/json
+
+{
+  "username": "paul11",
+  "password": "123456"
+}
+
+###
+GET http://localhost:3001/users/?offset=5&limit=10
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNjE3NjI4OTk2LCJleHAiOjE2Mjk2Mjg5OTZ9.1_Nc3FnCD_6EYZPz30cSr_wbPNnlo2JRM1n3AQB_Org
+
+
+###
+GET http://localhost:3001/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNjE3NjI4OTk2LCJleHAiOjE2Mjk2Mjg5OTZ9.1_Nc3FnCD_6EYZPz30cSr_wbPNnlo2JRM1n3AQB_Org
+
+###
+PATCH http://localhost:3001/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNjE3NjI4OTk2LCJleHAiOjE2Mjk2Mjg5OTZ9.1_Nc3FnCD_6EYZPz30cSr_wbPNnlo2JRM1n3AQB_Org
+Content-Type:  application/json
+
+{
+  "username": "paul11",
+  "password": "123456"
+}
+
+###
+GET http://localhost:3001/custom-teams
+
+###
+POST http://localhost:3001/custom-teams
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNjE3NjI4OTk2LCJleHAiOjE2Mjk2Mjg5OTZ9.1_Nc3FnCD_6EYZPz30cSr_wbPNnlo2JRM1n3AQB_Org
+Content-Type: application/json
+
+{
+  "teamName": "my new team",
+  "lineup": "{\"value\":4,\"label\":\"5-2-3\",\"formation\":{\"gk\":[\"gk\"],\"def\":[\"lwb\",\"lcb\",\"ccb\",\"rcb\",\"rwb\"],\"mid\":[\"lcm\",\"rcm\"],\"att\":[\"lw\",\"st\",\"rw\"]},\"team\":{\"gk\":{\"player_id\":18812,\"player_name\":\"Adrián\",\"age\":33,\"nationality\":\"Spain\",\"position\":\"Goalkeeper\"},\"lwb\":{},\"lcb\":{},\"ccb\":{},\"rcb\":{},\"rwb\":{},\"lcm\":{},\"rcm\":{},\"lw\":{},\"st\":{},\"rw\":{}}}"
+}
+
+###
+GET http://localhost:3001/custom-teams/2
+
+###
+PATCH http://localhost:3001/custom-teams/35
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNjE3NjQxNDUxLCJleHAiOjE2Mjk2NDE0NTF9.t3TPioN3lCnHW0uNpP_oQfShXyjUm7EUfX44xRXINSo
+Content-Type: application/json
+
+{
+  "teamName": "yas team",
+  "lineup": "{\"value\":4,\"label\":\"5-2-3\",\"formation\":{\"gk\":[\"gk\"],\"def\":[\"lwb\",\"lcb\",\"ccb\",\"rcb\",\"rwb\"],\"mid\":[\"lcm\",\"rcm\"],\"att\":[\"lw\",\"st\",\"rw\"]},\"team\":{\"gk\":{\"player_id\":18812,\"player_name\":\"Adrián\",\"age\":33,\"nationality\":\"Spain\",\"position\":\"Goalkeeper\"},\"lwb\":{},\"lcb\":{},\"ccb\":{},\"rcb\":{},\"rwb\":{},\"lcm\":{},\"rcm\":{},\"lw\":{},\"st\":{},\"rw\":{}}}"
+}
+
+###
+DELETE http://localhost:3001/custom-teams/35
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNjE3NjQxNDUxLCJleHAiOjE2Mjk2NDE0NTF9.t3TPioN3lCnHW0uNpP_oQfShXyjUm7EUfX44xRXINSo
+
+###
+GET http://localhost:3001/custom-teams/my-teams/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNjE3NjQxNDUxLCJleHAiOjE2Mjk2NDE0NTF9.t3TPioN3lCnHW0uNpP_oQfShXyjUm7EUfX44xRXINSo
+
+###
+GET http://localhost:3001/highlights
+
+###
+GET http://localhost:3001/players
+
+###
+GET http://localhost:3001/players/42
+
+###
+GET http://localhost:3001/football/2021-04-05
+
+###
+GET http://localhost:3001/football/fixture/events/592795
+
+###
+GET http://localhost:3001/football/fixture/statistics/592795

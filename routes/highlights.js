@@ -7,11 +7,13 @@ const router = express.Router();
 async function higlightsRoute(req, res) {
   const url = 'https://www.scorebat.com/video-api/v1/';
   const response = await fetch(url);
+
   if (response.status < 200 || response.status > 299) {
-    const status = response.status ? response.status : 500;
-    const statusText = response.statusText ? response.statusText : 'Internal Server Error';
+    const status = response.status || 500;
+    const statusText = response.statusText || 'Internal Server Error';
     return res.status(status).json({ error: statusText });
   }
+
   const result = await response.json();
   return res.status(200).json(result);
 }

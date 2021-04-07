@@ -3,7 +3,12 @@ const fetch = require('node-fetch');
 
 const router = express.Router();
 
-const { currSeason } = require('../static/static-ids');
+const {
+  catchErrors,
+  checkRequestAndUpdate,
+} = require('../utils/utils');
+
+const staticIds = require('../static/static-ids.json');
 
 const {
   bundesTeams,
@@ -19,17 +24,10 @@ const {
 } = require('../static/static-squads');
 
 const {
-  bundesligaId,
-  laligaId,
-  premId,
-  serieAId,
-} = require('../static/static-ids');
-
-const {
   BASE_URL_FOOTBALL_API: baseUrl,
   RAPID_API_KEY,
   RAPID_API_HOST,
-  NODE_ENV,
+  DATABASE_ENVIRONMENT,
 } = process.env;
 
 const options = {
@@ -59,18 +57,26 @@ async function allPlayers(req, res) {
     return res.status(400).json({ error: 'Invalid Team ID' });
   }
 
-  const teamUrl = new URL(`/v2/players/squad/${id}/${currSeason}`, baseUrl);
+  const teamUrl = new URL(`/v2/players/squad/${id}/${staticIds.currSeason}`, baseUrl);
   const responseTeam = await fetch(teamUrl.href, options);
   const jsonTeam = await responseTeam.json();
+
+  if (!jsonTeam || !jsonTeam.api || !jsonTeam.api.players) {
+    return res.status(500).json({ error: 'Error communicating with rapid api' });
+  }
+
+  if (jsonTeam.api.players.length === 0) {
+    return res.status(404).json({ error: 'Team not found' });
+  }
 
   return res.status(200).json([jsonTeam]);
 }
 
 async function leagueTeamMap(req, res) {
-  const premUrl = new URL(`/v2/teams/league/${premId}`, baseUrl);
-  const bundesUrl = new URL(`/v2/teams/league/${bundesligaId}`, baseUrl);
-  const laligaUrl = new URL(`/v2/teams/league/${laligaId}`, baseUrl);
-  const serieAUrl = new URL(`/v2/teams/league/${serieAId}`, baseUrl);
+  const premUrl = new URL(`/v2/teams/league/${staticIds.premId}`, baseUrl);
+  const bundesUrl = new URL(`/v2/teams/league/${staticIds.bundesligaId}`, baseUrl);
+  const laligaUrl = new URL(`/v2/teams/league/${staticIds.laligaId}`, baseUrl);
+  const serieAUrl = new URL(`/v2/teams/league/${staticIds.serieAId}`, baseUrl);
 
   const [
     resPrem,
@@ -109,9 +115,8 @@ async function leagueTeamMap(req, res) {
   ]);
 }
 
-
 function staticPlayers(req, res, next) {
-  if (NODE_ENV !== 'static') {
+  if (DATABASE_ENVIRONMENT !== 'development' && !req.static) {
     return next();
   }
 
@@ -128,7 +133,7 @@ function staticPlayers(req, res, next) {
 }
 
 function staticTeamMap(req, res, next) {
-  if (NODE_ENV !== 'static') {
+  if (DATABASE_ENVIRONMENT !== 'development' && !req.static) {
     return next();
   }
 
@@ -146,24 +151,7 @@ function staticTeamMap(req, res, next) {
   ]);
 }
 
-
-function catchErrors(fn) {
-  return (req, res, next) => fn(req, res, next).catch(next);
-}
-
-function requestCheck(req, res, next) {
-  const apiKey = req.get('x-rapidapi-key');
-  const apiHost = req.get('x-rapidapi-host');
-
-  if (RAPID_API_KEY !== apiKey || RAPID_API_HOST !== apiHost) {
-    return res.status(401).json({ error: 'Invalid Api key' });
-  }
-
-  return next();
-}
-
-
-router.get('/', staticTeamMap, requestCheck, catchErrors(leagueTeamMap));
-router.get('/:id', staticPlayers, requestCheck, catchErrors(allPlayers));
+router.get('/', checkRequestAndUpdate, staticTeamMap, catchErrors(leagueTeamMap));
+router.get('/:id', checkRequestAndUpdate, staticPlayers, catchErrors(allPlayers));
 
 module.exports = router;

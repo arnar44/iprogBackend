@@ -1,25 +1,10 @@
 const express = require('express');
-const { login } = require('../utils/authenticate');
-const { createUser } = require('../db/queries');
+const { login, register } = require('../utils/authenticate');
 
 const router = express.Router();
 
 function catchErrors(fn) {
   return (req, res, next) => fn(req, res, next).catch(next);
-}
-
-async function register(req, res) {
-  const {
-    username, email, password,
-  } = req.body;
-
-  const result = await createUser({ username, email, password });
-
-  if (!result.success) {
-    return res.status(400).json(result.validation);
-  }
-
-  return res.status(201).json(result.item);
 }
 
 async function indexRoutes(req, res) {
@@ -31,22 +16,21 @@ async function indexRoutes(req, res) {
     users: {
       users: '/users',
       user: '/users/{id}',
-    },
-    me: {
       me: '/users/me',
-      profile: '/users/me/profile',
+    },
+    customTeams: {
+      customTeams: '/custom-teams',
+      customTeam: '/custom-teams/{id}',
+      myCustomTeams: 'custom-teams/my-teams/me',
     },
     highlights: '/highlights',
-    fantasy: {
-      static: '/fantasy',
-      myFantasy: '/fantasy/my-fantasy',
-    },
     football: {
       fixtures: '/football/{YYYY-MM-DD}',
       statistic: '/football/fixture/statistics/{fixtureId}',
-      event: 'football/fixture/events/{fixtureId}',
+      event: '/football/fixture/events/{fixtureId}',
     },
     players: {
+      leagueTeams: '/players',
       squad: '/players/{id}',
     },
   });

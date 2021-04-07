@@ -1,75 +1,107 @@
-const xss = require('xss');
+const fs = require('fs');
+const fetch = require('node-fetch');
+
+const staticIds = require('../static/static-ids.json');
 
 const {
-  readAll,
-  readUsers,
-  searchBooks,
-} = require('../db/queries');
+  BASE_URL_FOOTBALL_API: baseUrl,
+  RAPID_API_KEY,
+  RAPID_API_HOST,
+} = process.env;
 
-async function makeResult(rows, table, offset, limit, url, search) {
-  const result = {
-    links: {
-      self: {
-        href: `http://${url}/${table}${search}offset=${offset}&limit=${limit}`,
-      },
-    },
-    limit,
-    offset,
-    items: rows,
-  };
+const options = {
+  method: 'GET',
+  headers: {
+    'x-rapidapi-key': RAPID_API_KEY,
+    'x-rapidapi-host': RAPID_API_HOST,
+  },
+};
 
-  // Ef þetta er ekki fyrsta síða, þá setjum við 'prev' síðu
-  if (offset > 0) {
-    result.links.prev = {
-      href: `http://${url}/${table}${search}offset=${offset - limit}&limit=${limit}`,
-    };
-  }
-
-  // Ef raðir færri en limit þá kemur ekki next síða
-  if (!(rows.length < limit)) {
-    result.links.next = {
-      href: `http://${url}/${table}${search}offset=${Number(offset) + limit}&limit=${limit}`,
-    };
-  }
-
-  return result;
+function catchErrors(fn) {
+  return (req, res, next) => fn(req, res, next).catch(next);
 }
 
-// fall sem les allt úr töflu (books, categories eða users)
-async function getAll(req, table) {
-  // frumstilla offset, limit og search ef ekkert var slegið inn
-  let { offset = 0, limit = 10, search = null } = req.query;
-  offset = Number(offset);
-  limit = Number(limit);
-  search = xss(search);
+function requestCheck(req, res, next) {
+  const apiKey = req.get('x-rapidapi-key');
+  const apiHost = req.get('x-rapidapi-host');
 
-  const url = req.get('host');
-
-  // Ath hvort það sé verið að leita í gagagrunni (ef ekki er honum öllum skilað)
-  if (search) {
-    // sent inn í makeResult til að hafa offset og limit rétt þegar það er leitað
-    const searchString = `?search=${search}&`;
-    // Ef leitað var með '-' inní streng túlkum við það sem bil
-    const withSpaceSearch = search.replace(/-/g, ' ');
-    // Values send með inn í query
-    const values = [withSpaceSearch, offset, limit];
-    const rows = await searchBooks(values);
-    return makeResult(rows, 'books', offset, limit, url, searchString);
+  if (RAPID_API_KEY !== apiKey || RAPID_API_HOST !== apiHost) {
+    req.static = true;
   }
 
-  // skilyrði sem er sett aftast í query svo það þurfi ekki að gera of mörg query föll
-  const conditions = 'ORDER BY id OFFSET $1 LIMIT $2';
-  // values send með í query
-  const values = [offset, limit];
-
-  let rows;
-  if (table === 'users') {
-    rows = await readUsers(conditions, values);
-  } else {
-    rows = await readAll(table, conditions, values);
-  }
-
-  return makeResult(rows, table, offset, limit, url, '/?');
+  return next();
 }
 
-module.exports = { getAll };
+async function updateStaticRoute(req, res, next) {
+  if (req.static) {
+    return next();
+  }
+
+  const { lastUpdate } = staticIds;
+
+  const splitDate = lastUpdate.split('/');
+  const updateMonth = Number(splitDate[0]);
+  const updateYear = Number(splitDate[1]);
+
+  const today = new Date();
+  const currMonth = today.getMonth() + 1;
+  const currYear = today.getFullYear();
+
+  // Update static data
+  if (currYear > updateYear || (currMonth >= 7 && updateMonth < 7)) {
+    const premUrl = new URL('/v2/leagues/current/', baseUrl);
+    const resPrem = await fetch(premUrl.href, options);
+    const jsonPrem = await resPrem.json();
+
+    const { leagues } = jsonPrem.api;
+
+    const f1 = ['Premier League', 'Bundesliga 1', 'Primera Division', 'Serie A'];
+    const f2 = ['England', 'Germany', 'Spain', 'Italy'];
+
+    const result = leagues
+      .filter((obj) => f1.includes(obj.name) && f2.includes(obj.country))
+      .reduce((obj, item) => {
+        const newObj = obj;
+        newObj[item.country] = item.league_id;
+        return newObj;
+      }, {});
+
+    const foundAll = 'England' in result && 'Germany' in result && 'Spain' in result && 'Italy' in result;
+
+    if (!foundAll) {
+      console.error('Error updating static league ids - Not all ids founds');
+      req.static = true;
+      return next();
+    }
+
+    const startYear = currMonth > 6 ? currYear : currYear - 1;
+    const endYear = startYear < currYear ? currYear : currYear + 1;
+
+
+    const staticCodes = {
+      bundesligaId: result.Germany,
+      laligaId: result.Spain,
+      premId: result.England,
+      serieAId: result.Italy,
+      currSeason: `${startYear}-${endYear}`,
+      lastUpdate: `${today.getMonth() + 1}/${today.getFullYear()}`,
+    };
+
+    const json = JSON.stringify(staticCodes);
+    try {
+      fs.writeFileSync('static/static-ids.json', json, 'utf8');
+    } catch (err) {
+      console.error('Error updating static league ids - Could not write static ids');
+      req.static = true;
+    }
+  }
+
+  return next();
+}
+
+const checkRequestAndUpdate = [requestCheck, catchErrors(updateStaticRoute)];
+
+module.exports = {
+  catchErrors,
+  checkRequestAndUpdate,
+};

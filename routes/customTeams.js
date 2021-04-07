@@ -1,101 +1,111 @@
 const express = require('express');
 
 const router = express.Router();
-const { requireAuthentication } = require('../utils/authenticate');
 const {
-  readAll, createTeam, patchTeam, del,
+  addRecordToRequest,
+  requireAuthentication,
+  requireOwnerAuth,
+} = require('../utils/authenticate');
+
+const {
+  createTeam,
+  deleteRecordById,
+  patchTeam,
+  readAllRecords,
 } = require('../db/queries');
-
-async function getAllCustomTeams(req, res) {
-  const squads = await readAll('teams', '', []);
-
-  if (squads[0]) {
-    return res.status(200).json(squads);
-  }
-
-  // Don't think we need this
-  return res.status(404).json({ error: 'No Teams Found' });
-}
-
-async function getCustomTeamById(req, res) {
-  const { id } = req.params;
-
-  const conditions = 'WHERE id = $1';
-  const squad = await readAll('teams', conditions, [id]);
-
-  if (squad[0]) {
-    return res.status(200).json(squad);
-  }
-
-  return res.status(404).json({ error: 'Team Not Found' });
-}
-
-async function createRoute(req, res) {
-  const result = await createTeam(req.body);
-
-  if (!result.success) {
-    return res.status(400).json(result.validation);
-  }
-
-  return res.status(201).json(result.item);
-}
-
-async function patchRoute(req, res) {
-  const { id } = req.params;
-  const result = await patchTeam(id, req.body, req.user[0].id);
-
-  if (!result.success) {
-    if (result.notfound) {
-      return res.status(404).json({ error: 'Team not found' });
-    }
-
-    if (result.authentication) {
-      return res.status(401).json({ error: 'Not authorized to edit this team' });
-    }
-
-    return res.status(400).json(result.validation);
-  }
-
-  return res.status(201).json(result.item);
-}
-
-async function getAllMyTeams(req, res) {
-  const { id } = req.user[0];
-
-  const conditions = 'WHERE owner_id = $1';
-  const squad = await readAll('teams', conditions, [id]);
-
-  if (squad[0]) {
-    return res.status(200).json(squad);
-  }
-
-  return res.status(404).json({ error: 'No Teams Found For User' });
-}
-
-async function deleteRoute(req, res) {
-  const result = await del(req.params.id, req);
-
-  if (result.length === 0) {
-    return res.status(404).json({ error: 'Team Not Found' });
-  }
-
-  if (result.error) {
-    return res.status(400).json(result.error);
-  }
-
-  return res.status(200).json(result);
-}
 
 
 function catchErrors(fn) {
   return (req, res, next) => fn(req, res, next).catch(next);
 }
 
+async function getAllCustomTeams(req, res) {
+  const result = await readAllRecords('teams', '', []);
+
+  if (!result.success) {
+    return res.status(result.code).json(result.obj);
+  }
+
+  return res.status(200).json(result.item);
+}
+
+async function createRoute(req, res) {
+  const { teamName, lineup } = req.body;
+  const { id, username } = req.user;
+
+  const result = await createTeam({
+    teamName, ownerName: username, lineup, id,
+  });
+
+  if (!result.success) {
+    return res.status(result.code).json(result.obj);
+  }
+
+  return res.status(201).json(result.item);
+}
+
+async function getCustomTeamById(req, res) {
+  const { record } = req;
+
+  if (!record) throw new Error('Article record to delete not found!');
+
+  return res.status(200).json(req.record);
+}
+
+async function patchRoute(req, res) {
+  const oldTeam = req.record;
+  const {
+    teamName,
+    lineup,
+  } = req.body;
+
+  // eslint-disable-next-line camelcase
+  if (!teamName && !lineup) {
+    return res.status(200).json(oldTeam);
+  }
+
+  const result = await patchTeam({ oldTeam, name: teamName, lineup });
+
+  if (!result.success) {
+    return res.status(result.code).json(result.obj);
+  }
+
+  return res.status(200).json(result.item);
+}
+
+async function deleteRoute(req, res) {
+  const { record } = req;
+
+  if (!record) throw new Error('Team to delete not found!');
+
+  const result = await deleteRecordById({ id: record.id, table: 'teams' });
+
+  if (!result.success) {
+    return res.status(result.code).json(result.obj);
+  }
+
+  delete req.record;
+
+  return res.status(200).json(result.item);
+}
+
+async function getAllMyTeams(req, res) {
+  const { id } = req.user;
+
+  const result = await readAllRecords('teams', 'WHERE owner_id = $1', [id]);
+
+  if (!result.success) {
+    return res.status(result.code).json(result.obj);
+  }
+
+  return res.status(200).json(result.item);
+}
+
 router.get('/', catchErrors(getAllCustomTeams));
 router.post('/', requireAuthentication, catchErrors(createRoute));
-router.get('/:id', catchErrors(getCustomTeamById));
-router.patch('/:id', requireAuthentication, catchErrors(patchRoute));
-router.delete('/:id', requireAuthentication, catchErrors(deleteRoute));
+router.get('/:id', catchErrors(addRecordToRequest), catchErrors(getCustomTeamById));
+router.patch('/:id', requireOwnerAuth, catchErrors(patchRoute));
+router.delete('/:id', requireOwnerAuth, catchErrors(deleteRoute));
 router.get('/my-teams/me', requireAuthentication, catchErrors(getAllMyTeams));
 
 
